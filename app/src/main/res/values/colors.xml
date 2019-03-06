@@ -3,4 +3,9 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="Coral">#FA7268</color>
+    <color name="CoralDark">#BB564E</color>
+    <color name="SeaBlue">#1C5587</color>
+    <color name="Yellow">#FAC85F</color>
+    <color name="White">#FFFFFF</color>
 </resources>

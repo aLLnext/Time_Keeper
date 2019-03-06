@@ -1,4 +1,3 @@
-Java.gitignore
 *.iml
 .gradle
 /local.properties
