@@ -1,6 +1,5 @@
 package com.example.toxaxab.timekeeper
 
-import android.graphics.Typeface.BOLD
 import android.support.design.widget.TabLayout
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
@@ -8,19 +7,20 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
-import android.support.v4.view.ViewPager
 import android.os.Bundle
-import android.view.LayoutInflater
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import com.example.toxaxab.timekeeper.UI.ActActivity
+import com.example.toxaxab.timekeeper.Adapters.MainActivityAdapter
+import com.example.toxaxab.timekeeper.Model.MyActivity
+import com.example.toxaxab.timekeeper.Model.Supplier
+import com.example.toxaxab.timekeeper.UI.Navigation.ActActivity
 import com.example.toxaxab.timekeeper.UI.Navigation.SetActivity
 import com.example.toxaxab.timekeeper.UI.Navigation.StatActivity
 
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_activity.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,7 +37,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
@@ -52,7 +51,6 @@ class MainActivity : AppCompatActivity() {
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
         }
-
     }
 
 
