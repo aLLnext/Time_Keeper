@@ -8,8 +8,10 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.os.Bundle
+import android.support.v4.app.FragmentActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.example.toxaxab.timekeeper.Adapters.MainActivityAdapter
@@ -21,6 +23,7 @@ import com.example.toxaxab.timekeeper.UI.Navigation.StatActivity
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_activity.*
+import android.widget.Toast
 
 class MainActivity : AppCompatActivity() {
 
@@ -43,7 +46,7 @@ class MainActivity : AppCompatActivity() {
 
         // Set up the ViewPager with the sections adapter.
         container.adapter = mSectionsPagerAdapter
-
+        container.offscreenPageLimit = 2
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
 
@@ -52,6 +55,50 @@ class MainActivity : AppCompatActivity() {
                     .setAction("Action", null).show()
         }
     }
+
+    //TO DEBUG
+    /*override fun onStart() {
+        super.onStart()
+
+        Toast.makeText(applicationContext, "onStart()", Toast.LENGTH_SHORT).show()
+        Log.i("MAIN", "onStart()")
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        Toast.makeText(applicationContext, "onResume()", Toast.LENGTH_SHORT).show()
+        Log.i("MAIN", "onResume()")
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        Toast.makeText(applicationContext, "onPause()", Toast.LENGTH_SHORT).show()
+        Log.i("MAIN", "onPause()")
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        Toast.makeText(applicationContext, "onStop()", Toast.LENGTH_SHORT).show()
+        Log.i("MAIN", "onStop()")
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+
+        Toast.makeText(applicationContext, "onRestart()", Toast.LENGTH_SHORT).show()
+        Log.i("MAIN", "onRestart()")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        Toast.makeText(applicationContext, "onDestroy()", Toast.LENGTH_SHORT).show()
+        Log.i("MAIN", "onDestroy()")
+    }
+    //!TO DEBUG*/
 
     /**
      * A [FragmentPagerAdapter] that returns a fragment corresponding to

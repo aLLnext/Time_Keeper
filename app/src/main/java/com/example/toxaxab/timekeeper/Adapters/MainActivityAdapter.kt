@@ -30,8 +30,8 @@ class MainActivityAdapter(val context: Context, val myActivities: List<MyActivit
     }
 
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var currentActivity: MyActivity? = null
-        var currentPosition: Int = 0
+        private var currentActivity: MyActivity? = null
+        private var currentPosition: Int = 0
         private lateinit var job: Job
 
         init {
@@ -67,20 +67,18 @@ class MainActivityAdapter(val context: Context, val myActivities: List<MyActivit
             this.currentPosition = pos
         }
 
-        fun startTimer(activity: MyActivity?) = runBlocking {
+        private fun startTimer(activity: MyActivity?) = runBlocking {
             job = launch(Dispatchers.IO) {
                 itemView.timer.base = SystemClock.elapsedRealtime() - activity!!.currentTime
                 itemView.timer.start()
                 //startTimer(currentActivity)
-
             }
 
         }
 
-        fun stopTimer(activity: MyActivity?) {
+        private fun stopTimer(activity: MyActivity?) {
             if (activity!!.condition == Condition.INACTIVE) {
                 itemView.timer.stop()
-
                 job.cancel()
                 val time = (SystemClock.elapsedRealtime() - itemView.timer.base) - activity.currentTime
                 activity.currentTime += time
