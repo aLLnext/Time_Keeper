@@ -1,4 +1,4 @@
-package com.example.toxaxab.timekeeper
+package com
 
 import org.junit.Test
 

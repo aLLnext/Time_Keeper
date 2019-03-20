@@ -7,7 +7,7 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.example.toxaxab.timekeeper"
+        applicationId "com.timekeeper"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1

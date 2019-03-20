@@ -7,7 +7,7 @@
               android:layout_height="match_parent"
               android:orientation="vertical"
               android:fitsSystemWindows="true"
-              tools:context=".MainActivity" android:background="@color/Coral_background">
+              tools:context="com.timekeeper.MainActivity" android:background="@color/Coral_background">
 
     <android.support.design.widget.AppBarLayout
             android:id="@+id/appbar"

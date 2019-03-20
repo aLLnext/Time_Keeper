@@ -1,6 +1,4 @@
-package com.example.toxaxab.timekeeper.Model
-
-import android.os.SystemClock
+package com.timekeeper.Model
 
 data class MyActivity(var name: String, val id: Int) {
     var currentTime: Long = 0

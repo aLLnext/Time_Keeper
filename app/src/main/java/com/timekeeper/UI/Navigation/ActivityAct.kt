@@ -1,4 +1,4 @@
-package com.example.toxaxab.timekeeper.UI.Navigation
+package com.timekeeper.UI.Navigation
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -6,21 +6,10 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.toxaxab.timekeeper.Adapters.MainActivityAdapter
-import com.example.toxaxab.timekeeper.Model.Supplier
+import com.timekeeper.Adapters.MainActivityAdapter
+import com.timekeeper.Model.Supplier
 import com.example.toxaxab.timekeeper.R
-import org.jetbrains.anko.find
-import android.widget.Toast
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.content.Intent
-import android.widget.Button
 import kotlinx.android.synthetic.main.fragment_activity.view.*
-import android.content.Context.NOTIFICATION_SERVICE
-import android.app.NotificationChannel
-import android.graphics.Color
-import android.support.v4.app.NotificationCompat
-import com.example.toxaxab.timekeeper.MainActivity
 
 
 class ActivityAct : Fragment() {

@@ -1,31 +1,21 @@
-package com.example.toxaxab.timekeeper.Adapters
+package com.timekeeper.Adapters
 
 import android.app.*
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
 import android.os.SystemClock
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.example.toxaxab.timekeeper.Model.Condition
-import com.example.toxaxab.timekeeper.Model.MyActivity
+import com.timekeeper.Model.Condition
+import com.timekeeper.Model.MyActivity
 import com.example.toxaxab.timekeeper.R
 import kotlinx.android.synthetic.main.list_item.view.*
 import kotlinx.coroutines.*
-import java.time.Duration
-import android.support.v4.content.ContextCompat.getSystemService
-import android.graphics.BitmapFactory
 import android.support.v4.app.NotificationCompat
-import android.graphics.Color
-import android.os.Build
-import android.provider.Settings.Global.getString
-import android.widget.RemoteViews
-import com.example.toxaxab.timekeeper.MainActivity
-import android.support.v4.content.ContextCompat.getSystemService
-import kotlinx.android.synthetic.main.fragment_activity.view.*
+import com.timekeeper.MainActivity
 
 
 class MainActivityAdapter(val context: Context, val myActivities: List<MyActivity>) : RecyclerView.Adapter<MainActivityAdapter.MyViewHolder>() {
@@ -73,16 +63,13 @@ class MainActivityAdapter(val context: Context, val myActivities: List<MyActivit
                         cancelNotification(currentActivity)
                     }
                 }
-
             }
         }
 
         fun setData(myActivity: MyActivity?, pos: Int) {
             itemView.txvTitle.text = myActivity!!.name
             itemView.txvComment.text = myActivity.comment
-            itemView.timer.setEms(100)
             itemView.ivCondition.setImageResource(R.drawable.ic_play)
-            //if (myActivity.condition == Condition.INACTIVE)
             this.currentActivity = myActivity
             this.currentPosition = pos
         }
@@ -137,7 +124,7 @@ class MainActivityAdapter(val context: Context, val myActivities: List<MyActivit
                     .setOngoing(true)
         }
 
-        private fun cancelNotification(activity: MyActivity?){
+        private fun cancelNotification(activity: MyActivity?) {
             mNotifyManager?.cancel(activity!!.id)
         }
 

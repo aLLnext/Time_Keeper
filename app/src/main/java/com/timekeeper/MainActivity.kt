@@ -1,4 +1,4 @@
-package com.example.toxaxab.timekeeper
+package com.timekeeper
 
 import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
@@ -7,9 +7,10 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.os.Bundle
-import com.example.toxaxab.timekeeper.UI.Navigation.ActivityAct
-import com.example.toxaxab.timekeeper.UI.Navigation.SettingsAct
-import com.example.toxaxab.timekeeper.UI.Navigation.StatisticsAct
+import com.example.toxaxab.timekeeper.R
+import com.timekeeper.UI.Navigation.ActivityAct
+import com.timekeeper.UI.Navigation.SettingsAct
+import com.timekeeper.UI.Navigation.StatisticsAct
 
 import kotlinx.android.synthetic.main.activity_main.*
 
