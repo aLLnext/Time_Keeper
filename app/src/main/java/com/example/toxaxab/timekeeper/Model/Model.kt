@@ -2,7 +2,7 @@ package com.example.toxaxab.timekeeper.Model
 
 import android.os.SystemClock
 
-data class MyActivity(var name: String) {
+data class MyActivity(var name: String, val id: Int) {
     var currentTime: Long = 0
     var comment: String? = null
     var condition: Condition = Condition.INACTIVE
@@ -15,5 +15,5 @@ enum class Condition{
 }
 
 object Supplier {
-    val activities = listOf<MyActivity>(MyActivity("Sleeping"), MyActivity("Coding"))
+    val activities = listOf<MyActivity>(MyActivity("Sleeping", 0), MyActivity("Coding", 1))
 }
