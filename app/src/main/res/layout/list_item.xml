@@ -16,7 +16,7 @@
                 android:id="@+id/ivCondition"
                 android:layout_width="50dp"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_plus"
+                android:src="@drawable/ic_play"
                 android:background="@color/CoralDark"
                 android:layout_gravity="center"
         />

@@ -10,6 +10,7 @@
             android:theme="@style/AppTheme">
         <activity
                 android:name="com.timekeeper.MainActivity"
+                android:launchMode="singleTop"
                 android:theme="@style/AppTheme.NoActionBar"
                 android:screenOrientation="portrait">
             <intent-filter>

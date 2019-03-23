@@ -38,37 +38,6 @@ class MainActivity : AppCompatActivity() {
         container.offscreenPageLimit = 2
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
-
-        /*fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }*/
-
-        /*val mBuilder:NotificationCompat.Builder = NotificationCompat.Builder(this, "1")
-                .setSmallIcon(R.drawable.ic_play)
-                .setContentTitle("My notification")
-                .setContentText("Hello World!")
-// Creates an explicit intent for an Activity in your app
-        val resultIntent = Intent(this, MainActivity::class.java)
-
-// The stack builder object will contain an artificial back stack for the
-// started Activity.
-// This ensures that navigating backward from the Activity leads out of
-// your application to the Home screen.
-        val stackBuilder = TaskStackBuilder.create(this)
-// Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(MainActivity::class.java)
-// Adds the Intent that starts the Activity to the top of the stack
-        stackBuilder.addNextIntent(resultIntent)
-        val resultPendingIntent = stackBuilder.getPendingIntent(
-                0,
-                PendingIntent.FLAG_UPDATE_CURRENT
-        )
-        mBuilder.setContentIntent(resultPendingIntent)
-        val mNotificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
-// mId allows you to update the notification later on.
-        val mId = 1
-        mNotificationManager!!.notify(mId, mBuilder.build())*/
     }
 
     //TO DEBUG
@@ -124,17 +93,17 @@ class MainActivity : AppCompatActivity() {
         override fun getItem(position: Int): Fragment? {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            when (position) {
+            return when (position) {
                 0 -> {
-                    return ActivityAct()
+                    ActivityAct()
                 }
                 1 -> {
-                    return StatisticsAct()
+                    StatisticsAct()
                 }
                 2 -> {
-                    return SettingsAct()
+                    SettingsAct()
                 }
-                else -> return null
+                else -> null
             }
         }
 

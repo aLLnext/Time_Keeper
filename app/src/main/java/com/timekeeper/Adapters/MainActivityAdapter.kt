@@ -1,8 +1,12 @@
 package com.timekeeper.Adapters
 
 import android.app.*
+import android.app.PendingIntent.getActivity
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.getIntent
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.SystemClock
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -14,8 +18,11 @@ import com.timekeeper.Model.MyActivity
 import com.example.toxaxab.timekeeper.R
 import kotlinx.android.synthetic.main.list_item.view.*
 import kotlinx.coroutines.*
-import android.support.v4.app.NotificationCompat
+import android.widget.RemoteViews
 import com.timekeeper.MainActivity
+
+import android.support.v4.app.NotificationCompat
+import android.util.Log
 
 
 class MainActivityAdapter(val context: Context, val myActivities: List<MyActivity>) : RecyclerView.Adapter<MainActivityAdapter.MyViewHolder>() {
@@ -36,12 +43,13 @@ class MainActivityAdapter(val context: Context, val myActivities: List<MyActivit
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private var currentActivity: MyActivity? = null
         private var currentPosition: Int = 0
-        private lateinit var job: Job
+        private var job: Job? = null
         private val PRIMARY_CHANNEL_ID = "primary_notification_channel"
         private var mNotifyManager: NotificationManager? = null
-        private val NOTIFICATION_ID = 0
+        //private val NOTIFICATION_ID = 0 //????
 
         init {
+            createNotificationChannel()
             itemView.setOnClickListener {
                 Toast.makeText(context, currentActivity!!.name + " clicked", Toast.LENGTH_SHORT).show()
             }
@@ -52,7 +60,6 @@ class MainActivityAdapter(val context: Context, val myActivities: List<MyActivit
                         itemView.ivCondition.setImageResource(R.drawable.ic_stop)
                         currentActivity!!.condition = Condition.ACTIVE
                         startTimer(currentActivity)
-                        createNotificationChannel()
                         sendNotification()
                     }
 
@@ -67,9 +74,20 @@ class MainActivityAdapter(val context: Context, val myActivities: List<MyActivit
         }
 
         fun setData(myActivity: MyActivity?, pos: Int) {
-            itemView.txvTitle.text = myActivity!!.name
-            itemView.txvComment.text = myActivity.comment
-            itemView.ivCondition.setImageResource(R.drawable.ic_play)
+            with(myActivity!!) {
+                itemView.txvTitle.text = name
+                itemView.txvComment.text = comment
+                itemView.timer.base = SystemClock.elapsedRealtime() - currentTime
+                when (condition) {
+                    Condition.ACTIVE -> {
+                        itemView.ivCondition.setImageResource(R.drawable.ic_stop)
+                        startTimer(this)
+                    }
+                    Condition.INACTIVE ->
+                        itemView.ivCondition.setImageResource(R.drawable.ic_play)
+                }
+            }
+
             this.currentActivity = myActivity
             this.currentPosition = pos
         }
@@ -77,16 +95,15 @@ class MainActivityAdapter(val context: Context, val myActivities: List<MyActivit
         private fun startTimer(activity: MyActivity?) = runBlocking {
             job = launch(Dispatchers.IO) {
                 itemView.timer.base = SystemClock.elapsedRealtime() - activity!!.currentTime
+                activity.timerBase = itemView.timer.base
                 itemView.timer.start()
-                //sendNotification()
-                //startTimer(currentActivity)
             }
         }
 
         private fun stopTimer(activity: MyActivity?) {
             itemView.timer.stop()
-            job.cancel()
-            val time = (SystemClock.elapsedRealtime() - itemView.timer.base) - activity!!.currentTime
+            job!!.cancel()
+            val time = (SystemClock.elapsedRealtime() - activity!!.timerBase) - activity.currentTime
             activity.currentTime += time
             val sec = time / 1000
             Toast.makeText(context, "$sec seconds", Toast.LENGTH_SHORT).show()
@@ -114,30 +131,28 @@ class MainActivityAdapter(val context: Context, val myActivities: List<MyActivit
 
         private fun getNotificationBuilder(): NotificationCompat.Builder {
             val notificationIntent = Intent(context, MainActivity::class.java)
+            notificationIntent.putExtra("activity", currentActivity!!.id)
+            notificationIntent.putExtra("start", SystemClock.elapsedRealtime() - currentActivity!!.currentTime)
+
             val notificationPendingIntent = PendingIntent.getActivity(context,
-                    NOTIFICATION_ID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+                    0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            val remoteViews = RemoteViews(context.packageName, R.layout.notification)
+            remoteViews.setTextViewText(R.id.textView, currentActivity!!.name)
+            remoteViews.setChronometer(R.id.timer, SystemClock.elapsedRealtime() - currentActivity!!.currentTime, "%s", true)
+            remoteViews.setOnClickPendingIntent(R.id.root, notificationPendingIntent)
+            remoteViews.setOnClickPendingIntent(R.id.n_btn_stop, notificationPendingIntent)
             return NotificationCompat.Builder(context, PRIMARY_CHANNEL_ID)
-                    .setContentTitle("You've been notified!")
-                    .setContentText(currentActivity!!.name + "Start")
+                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                     .setSmallIcon(R.drawable.ic_play)
+                    .setCustomContentView(remoteViews)
                     .setContentIntent(notificationPendingIntent)
+                    .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+                    .setShowWhen(false)
                     .setOngoing(true)
         }
 
         private fun cancelNotification(activity: MyActivity?) {
             mNotifyManager?.cancel(activity!!.id)
         }
-
-        /*private fun sendNotification(){
-            val intent = Intent()
-            val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
-            val notification = Notification.Builder(context)
-                    .setSmallIcon(R.drawable.ic_play)
-                    .setContentTitle("Test")
-                    .setContentText("text")
-            notification.setContentIntent(pendingIntent)
-            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.notify(0, notification.build())
-        }*/
     }
 }
