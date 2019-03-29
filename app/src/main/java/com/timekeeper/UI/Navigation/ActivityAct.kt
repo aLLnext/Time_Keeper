@@ -2,8 +2,11 @@ package com.timekeeper.UI.Navigation
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import android.database.Cursor
+import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.os.SystemClock
 import android.preference.PreferenceManager
@@ -21,14 +24,17 @@ import com.timekeeper.Model.Condition
 import com.timekeeper.Model.MyActivity
 import kotlinx.android.synthetic.main.fragment_activity.view.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 
 class ActivityAct : Fragment() {
-    private var sPref: SharedPreferences? = null
-    private var editor: SharedPreferences.Editor? = null
-    @SuppressLint("CommitPrefEdits")
+    //private var sPref: SharedPreferences? = null
+    //private var editor: SharedPreferences.Editor? = null
+    private var dataBase: SQLiteDatabase? = null
+    private lateinit var adapter: MainActivityAdapter
+    //@SuppressLint("CommitPrefEdits")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.fragment_activity, container, false)
         val layoutManager = LinearLayoutManager(v.context)
@@ -36,45 +42,51 @@ class ActivityAct : Fragment() {
         //val rv = v!!.find<RecyclerView>(R.id.recyclerView)
         //val id = activity?.intent?.getIntExtra("activity", 0)
         v.recyclerView.layoutManager = layoutManager
-        val adapter = MainActivityAdapter(v.context, Supplier.activities)
+        adapter = MainActivityAdapter(v.context, Supplier.activities, dataBase)
         v.recyclerView.adapter = adapter
-        sPref = PreferenceManager.getDefaultSharedPreferences(context)
-        editor = sPref!!.edit()
+        dataBase = context!!.openOrCreateDatabase("data.db", MODE_PRIVATE, null)
+        //dataBase!!.execSQL("DROP TABLE activities")
+        dataBase!!.execSQL("CREATE TABLE IF NOT EXISTS activities(id INT, name VARCHAR(50), time LONG, timerBase LONG, condition BOOL)")
+        if (dataBase!!.isOpen) {
+            Toast.makeText(activity, "DATEBASE",
+                    Toast.LENGTH_SHORT).show()
+        }
         return v
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Toast.makeText(activity, "FirstFragment.onCreate()",
-                Toast.LENGTH_LONG).show()
-    }
-
-
-    override fun onAttach(activity: Activity?) {
-        super.onAttach(activity)
-
-        Toast.makeText(getActivity(), "FirstFragment.onAttach()",
-                Toast.LENGTH_LONG).show()
-        Log.d("Fragment 1", "onAttach")
+                Toast.LENGTH_SHORT).show()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        loadData()
         Toast.makeText(activity, "FirstFragment.onActivityCreated()",
-                Toast.LENGTH_LONG).show()
-        Log.d("Fragment 1", "onActivityCreated")
+                Toast.LENGTH_SHORT).show()
+        //Log.d("Fragment 1", "onActivityCreated")
     }
 
     override fun onStart() {
         super.onStart()
-        loadData()
-        Toast.makeText(activity, "FirstFragment.onStart()",
-                Toast.LENGTH_LONG).show()
+        //Toast.makeText(activity, "FirstFragment.onStart()",
+        //        Toast.LENGTH_SHORT).show()
         Log.d("Fragment 1", "onStart")
     }
 
     override fun onResume() {
         super.onResume()
+        loadData()
+        if (activity?.intent?.action != null) {
+            if (activity?.intent?.action == "STOP") {
+                val id = activity?.intent?.getIntExtra("activity", -1)
+                val timeStart = activity?.intent?.getLongExtra("start", 0)
+                Supplier.activities[id!!].currentTime = (SystemClock.elapsedRealtime() - timeStart!!)
+                Supplier.activities[id].condition = Condition.ACTIVE
+                //adapter.
+            }
+        }
         /*val id1 = activity?.intent?.getIntExtra("activity", -1)
         val timeStart = activity?.intent?.getLongExtra("start", 0)
         Toast.makeText(activity, "FirstFragment.onResume()  = $id1",
@@ -88,60 +100,78 @@ class ActivityAct : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        Toast.makeText(activity, "FirstFragment.onPause()",
-                Toast.LENGTH_LONG).show()
+        //Toast.makeText(activity, "FirstFragment.onPause()",
+        //        Toast.LENGTH_SHORT).show()
         Log.d("Fragment 1", "onPause")
     }
 
     override fun onStop() {
         super.onStop()
+        saveData()
         Toast.makeText(activity, "FirstFragment.onStop()",
-                Toast.LENGTH_LONG).show()
+                Toast.LENGTH_SHORT).show()
         Log.d("Fragment 1", "onStop")
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Toast.makeText(activity, "FirstFragment.onDestroyView()",
-                Toast.LENGTH_LONG).show()
+        //Toast.makeText(activity, "FirstFragment.onDestroyView()",
+        //        Toast.LENGTH_SHORT).show()
         Log.d("Fragment 1", "onDestroyView")
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         saveData()
+        dataBase?.close()
+        super.onDestroy()
         Toast.makeText(activity, "FirstFragment.onDestroy()",
-                Toast.LENGTH_LONG).show()
+                Toast.LENGTH_SHORT).show()
         Log.d("Fragment 1", "onDestroy")
     }
 
     override fun onDetach() {
         super.onDetach()
-        //mListener = null;
-        Toast.makeText(activity, "FirstFragment.onDetach()",
-                Toast.LENGTH_LONG).show()
+        //Toast.makeText(activity, "FirstFragment.onDetach()",
+        //        Toast.LENGTH_SHORT).show()
         Log.d("Fragment 1", "onDetach")
     }
 
-    fun saveData() = runBlocking {
-        launch(Dispatchers.IO) {
-            //TODO надо сохранять также все активности,
-            //и скорее всего надо будет переелать метод сохранения
-            //скорее всего в БД, потому что SET хранит даные произвольно
-            for (act in Supplier.activities) {
-                val set = HashSet<String>()
-                set.add(act.condition.toString())
-                set.add(act.currentTime.toString())
-                set.add(act.timerBase.toString())
-                editor!!.putStringSet(act.id.toString(), set)
-            }
-            editor!!.apply()
-        }.join()
+    private fun initializeValues(data: Cursor) {
+        val id = data.getInt(0)
+        val currentTime = data.getLong(1)
+        val timerBase = data.getLong(2)
+        val cond: Condition = if (data.getInt(3) == 0) Condition.ACTIVE else Condition.INACTIVE
+        with(Supplier.activities[id]) {
+            if (timerBase == 0L)
+                return
+            this.condition = cond
+            this.timerBase = timerBase
+            if (cond == Condition.ACTIVE)
+                this.currentTime += (SystemClock.elapsedRealtime() - this.timerBase - this.currentTime)
+            else
+                this.currentTime = currentTime
+        }
     }
 
-    fun loadData() {
-        //editor!!.clear()
-        //editor!!.commit()
+    private fun loadData() {
+        if (dataBase!!.isOpen) {
+            Toast.makeText(activity, "LOAD DATA",
+                    Toast.LENGTH_SHORT).show()
+        }else{
+            dataBase = context!!.openOrCreateDatabase("data.db", MODE_PRIVATE, null)
+        }
+        //dataBase!!.execSQL("DROP TABLE activities")
+        //dataBase!!.execSQL("CREATE TABLE IF NOT EXISTS activities(id INT, name VARCHAR(50), time LONG, timerBase LONG, condition BOOL)")
+        val data = dataBase?.rawQuery("SELECT id, time, timerBase, condition FROM activities ORDER BY id", null)
+        if (data!!.moveToFirst()) {
+            initializeValues(data)
+            while (data.moveToNext()) {
+                initializeValues(data)
+            }
+            data.close()
+        }
+        /*editor!!.clear()
+        editor!!.commit()
         for (act in Supplier.activities) {
             val tmp = sPref!!.getStringSet(act.id.toString(), null)
             System.out.println(tmp?.size)
@@ -156,6 +186,35 @@ class ActivityAct : Fragment() {
             }
         }
         //editor!!.clear()
-        //editor!!.commit()
+        //editor!!.commit()*/
+    }
+
+    fun saveData() = runBlocking {
+        launch(Dispatchers.IO) {
+            //dataBase!!.execSQL("DROP TABLE activities")
+            //dataBase!!.execSQL("CREATE TABLE IF NOT EXISTS activities(id INT, name VARCHAR(50), time LONG, timerBase LONG, condition BOOL)")
+            //TODO надо сохранять также все активности,
+            //и скорее всего надо будет переелать метод сохранения
+            //скорее всего в БД, потому что SET хранит даные произвольно
+
+            for (act in Supplier.activities) {
+                val row = ContentValues()
+                row.put("id", act.id)
+                row.put("name", act.name)
+                row.put("time", act.currentTime)
+                row.put("timerBase", act.timerBase)
+                row.put("condition", act.condition.ordinal)
+                //if (act.currentTime != 0L) {
+                //    dataBase!!.execSQL("DROP TABLE activities")
+                //    dataBase!!.execSQL("CREATE TABLE IF NOT EXISTS activities(id INT, name VARCHAR(50), time LONG, timerBase LONG, condition BOOL)")
+                //}
+                dataBase!!.insert("activities", null, row)
+                /*else {
+                    System.out.print("RES $row")
+                    dataBase!!.update("activities", row, "id = ?", Array(1) { id.toString() })
+                }*/
+                //update
+            }
+        }.join()
     }
 }
