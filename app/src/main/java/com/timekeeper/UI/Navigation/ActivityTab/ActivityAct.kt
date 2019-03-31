@@ -1,15 +1,11 @@
-package com.timekeeper.UI.Navigation
+package com.timekeeper.UI.Navigation.ActivityTab
 
-import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.ContentValues
 import android.content.Context.MODE_PRIVATE
-import android.content.SharedPreferences
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.os.SystemClock
-import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
@@ -17,14 +13,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.timekeeper.Adapters.MainActivityAdapter
+import com.timekeeper.Adapters.ActivityActAdapter
 import com.timekeeper.Model.Supplier
 import com.example.toxaxab.timekeeper.R
+import com.timekeeper.MainActivity
 import com.timekeeper.Model.Condition
-import com.timekeeper.Model.MyActivity
 import kotlinx.android.synthetic.main.fragment_activity.view.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -33,7 +28,7 @@ class ActivityAct : Fragment() {
     //private var sPref: SharedPreferences? = null
     //private var editor: SharedPreferences.Editor? = null
     private var dataBase: SQLiteDatabase? = null
-    private lateinit var adapter: MainActivityAdapter
+    private lateinit var adapter: ActivityActAdapter
     //@SuppressLint("CommitPrefEdits")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.fragment_activity, container, false)
@@ -42,7 +37,8 @@ class ActivityAct : Fragment() {
         //val rv = v!!.find<RecyclerView>(R.id.recyclerView)
         //val id = activity?.intent?.getIntExtra("activity", 0)
         v.recyclerView.layoutManager = layoutManager
-        adapter = MainActivityAdapter(v.context, Supplier.activities, dataBase)
+        val act = activity as MainActivity
+        adapter = ActivityActAdapter(act, v.context, Supplier.activities, dataBase)
         v.recyclerView.adapter = adapter
         dataBase = context!!.openOrCreateDatabase("data.db", MODE_PRIVATE, null)
         //dataBase!!.execSQL("DROP TABLE activities")

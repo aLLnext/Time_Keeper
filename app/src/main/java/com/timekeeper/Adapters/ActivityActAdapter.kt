@@ -1,14 +1,9 @@
 package com.timekeeper.Adapters
 
 import android.app.*
-import android.app.PendingIntent.getActivity
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
-import android.content.Intent.getIntent
 import android.database.sqlite.SQLiteDatabase
-import android.graphics.Bitmap
-import android.graphics.Color
 import android.os.SystemClock
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -24,11 +19,9 @@ import android.widget.RemoteViews
 import com.timekeeper.MainActivity
 
 import android.support.v4.app.NotificationCompat
-import android.util.Log
-import com.timekeeper.Model.Supplier
 
 
-class MainActivityAdapter(val context: Context, private val myActivities: List<MyActivity>, val data: SQLiteDatabase?) : RecyclerView.Adapter<MainActivityAdapter.MyViewHolder>() {
+class ActivityActAdapter(val main: MainActivity, val context: Context, private val myActivities: List<MyActivity>, val data: SQLiteDatabase?) : RecyclerView.Adapter<ActivityActAdapter.MyViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.list_item, parent, false)
         return MyViewHolder(view)
@@ -100,17 +93,24 @@ class MainActivityAdapter(val context: Context, private val myActivities: List<M
             this.currentPosition = pos
         }
 
-        private fun startTimer(activity: MyActivity?) = runBlocking {
-            job = launch(Dispatchers.IO) {
-                itemView.timer.base = SystemClock.elapsedRealtime() - activity!!.currentTime
-                activity.timerBase = itemView.timer.base
-                itemView.timer.start()
-            }
+        private fun startTimer(activity: MyActivity?){
+            itemView.timer.base = SystemClock.elapsedRealtime() - activity!!.currentTime
+            activity.timerBase = itemView.timer.base
+            main.connecting(activity)
+            itemView.timer.start()
         }
+
+//        private fun startTimer(activity: MyActivity?) = runBlocking {
+//            job = launch(Dispatchers.IO) {
+//                itemView.timer.base = SystemClock.elapsedRealtime() - activity!!.currentTime
+//                activity.timerBase = itemView.timer.base
+//                itemView.timer.start()
+//            }
+//        }
 
         private fun stopTimer(activity: MyActivity?) {
             itemView.timer.stop()
-            job!!.cancel()
+            //job!!.cancel()
             val time = (SystemClock.elapsedRealtime() - activity!!.timerBase) - activity.currentTime
             activity.currentTime += time
             val sec = time / 1000
@@ -169,7 +169,7 @@ class MainActivityAdapter(val context: Context, private val myActivities: List<M
                     .setOngoing(true)
         }
 
-        fun cancelNotification(activity: MyActivity?) {
+        private fun cancelNotification(activity: MyActivity?) {
             mNotifyManager?.cancel(activity!!.id)
         }
     }

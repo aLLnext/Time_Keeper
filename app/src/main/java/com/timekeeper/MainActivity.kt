@@ -8,9 +8,10 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.os.Bundle
 import com.example.toxaxab.timekeeper.R
-import com.timekeeper.UI.Navigation.ActivityAct
+import com.timekeeper.Model.MyActivity
+import com.timekeeper.UI.Navigation.ActivityTab.ActivityAct
 import com.timekeeper.UI.Navigation.SettingsAct
-import com.timekeeper.UI.Navigation.StatisticsAct
+import com.timekeeper.UI.Navigation.StatisticsTab.StatisticsAct
 
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -25,10 +26,11 @@ class MainActivity : AppCompatActivity() {
      * [android.support.v4.app.FragmentStatePagerAdapter].
      */
     private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
-
+    private var fm: FragmentManager? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        fm = supportFragmentManager
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
@@ -38,6 +40,15 @@ class MainActivity : AppCompatActivity() {
         container.offscreenPageLimit = 2
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
+    }
+
+    fun connecting(activity: MyActivity) {
+        val statFragment = fm!!.fragments[1]
+        statFragment?.let {
+            statFragment as StatisticsAct
+            statFragment.insertInto(activity)
+        }
+
     }
 
     //TO DEBUG
@@ -113,17 +124,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun getPageTitle(position: Int): CharSequence? {
-            when (position) {
+            return when (position) {
                 0 -> {
-                    return resources.getString(R.string.tab_1)
+                    resources.getString(R.string.tab_1)
                 }
                 1 -> {
-                    return resources.getString(R.string.tab_2)
+                    resources.getString(R.string.tab_2)
                 }
                 2 -> {
-                    return resources.getString(R.string.tab_3)
+                    resources.getString(R.string.tab_3)
                 }
-                else -> return null
+                else -> null
             }
         }
     }
