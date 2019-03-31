@@ -11,8 +11,7 @@ data class MyActivity(var name: String, val id: Int) {
     fun toDB(): Activity {
         return Activity(id, name, condition.ordinal, timerBase, currentTime, comment)
     }
-} //todo нужен полноценный класс, с комментами и временем
-
+}
 
 enum class Condition {
     ACTIVE,

@@ -42,5 +42,4 @@ class StatisticsActAdapter internal constructor(
     }
 
     override fun getItemCount() = activities.size
-
 }

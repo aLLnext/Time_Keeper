@@ -13,7 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Database(entities = [Activity::class], version = 1)
-public abstract class ActivityRoomDatabase : RoomDatabase() {
+abstract class ActivityRoomDatabase : RoomDatabase() {
 
     abstract fun activityDao(): ActivityDao
 
@@ -28,7 +28,7 @@ public abstract class ActivityRoomDatabase : RoomDatabase() {
                         context.applicationContext,
                         ActivityRoomDatabase::class.java,
                         "Activity_database"
-                ).addCallback(ActiityDatabaseCallback(scope))
+                ).addCallback(ActivityDatabaseCallback(scope))
                         .build()
                 INSTANCE = instance
                 return instance
@@ -36,7 +36,7 @@ public abstract class ActivityRoomDatabase : RoomDatabase() {
         }
     }
 
-    private class ActiityDatabaseCallback(
+    private class ActivityDatabaseCallback(
             private val scope: CoroutineScope)
         : RoomDatabase.Callback() {
         override fun onOpen(db: SupportSQLiteDatabase) {
@@ -48,13 +48,13 @@ public abstract class ActivityRoomDatabase : RoomDatabase() {
             }
         }
 
-        fun populateDatabase(activityDao: ActivityDao){
+        fun populateDatabase(activityDao: ActivityDao) {
             activityDao.deleteAll()
-            with(Supplier.activities[0]){
+            with(Supplier.activities[0]) {
                 val act = Activity(id, name, condition.ordinal, timerBase, currentTime, null)
                 activityDao.insert(act)
             }
-            with(Supplier.activities[1]){
+            with(Supplier.activities[1]) {
                 val act = Activity(id, name, condition.ordinal, timerBase, currentTime, null)
                 activityDao.insert(act)
             }

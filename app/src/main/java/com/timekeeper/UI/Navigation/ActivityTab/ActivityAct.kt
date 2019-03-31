@@ -16,6 +16,7 @@ import android.widget.Toast
 import com.timekeeper.Adapters.ActivityActAdapter
 import com.timekeeper.Model.Supplier
 import com.example.toxaxab.timekeeper.R
+import com.timekeeper.Adapters.ActAdapter
 import com.timekeeper.MainActivity
 import com.timekeeper.Model.Condition
 import kotlinx.android.synthetic.main.fragment_activity.view.*
@@ -28,7 +29,7 @@ class ActivityAct : Fragment() {
     //private var sPref: SharedPreferences? = null
     //private var editor: SharedPreferences.Editor? = null
     private var dataBase: SQLiteDatabase? = null
-    private lateinit var adapter: ActivityActAdapter
+    private lateinit var adapter: ActAdapter
     //@SuppressLint("CommitPrefEdits")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.fragment_activity, container, false)
@@ -38,7 +39,8 @@ class ActivityAct : Fragment() {
         //val id = activity?.intent?.getIntExtra("activity", 0)
         v.recyclerView.layoutManager = layoutManager
         val act = activity as MainActivity
-        adapter = ActivityActAdapter(act, v.context, Supplier.activities, dataBase)
+        adapter = ActAdapter(v.context)
+        adapter.setData(Supplier.activities)
         v.recyclerView.adapter = adapter
         dataBase = context!!.openOrCreateDatabase("data.db", MODE_PRIVATE, null)
         //dataBase!!.execSQL("DROP TABLE activities")
