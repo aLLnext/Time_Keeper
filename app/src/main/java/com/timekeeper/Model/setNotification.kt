@@ -9,13 +9,13 @@ import android.os.SystemClock
 import android.support.v4.app.NotificationCompat
 import android.widget.RemoteViews
 import com.example.toxaxab.timekeeper.R
+import com.timekeeper.Database.Entity.Activity
 import com.timekeeper.MainActivity
 
-class SetNotification(val context: Context) {
+class SetNotification(val context: Context, var mNotifyManager: NotificationManager?) {
     private val PRIMARY_CHANNEL_ID = "primary_notification_channel"
-    private var mNotifyManager: NotificationManager? = null
 
-    init {
+    fun createNotificationChannel(){
         mNotifyManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
         if (android.os.Build.VERSION.SDK_INT >=
                 android.os.Build.VERSION_CODES.O) {
@@ -30,22 +30,22 @@ class SetNotification(val context: Context) {
         }
     }
 
-    fun sendNotification(currentActivity: MyActivity?) {
+    fun sendNotification(currentActivity: Activity?) {
         val notifyBuilder = getNotificationBuilder(currentActivity)
         mNotifyManager!!.notify(currentActivity!!.id, notifyBuilder.build())
     }
 
 
-    private fun getNotificationIntent(currentActivity: MyActivity?): Intent {
+    private fun getNotificationIntent(currentActivity: Activity?): Intent {
         val notificationIntent = Intent(context, MainActivity::class.java)
         notificationIntent.putExtra("activity", currentActivity!!.id)
         notificationIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         return notificationIntent
     }
 
-    private fun getNotificationBuilder(currentActivity: MyActivity?): NotificationCompat.Builder {
+    private fun getNotificationBuilder(currentActivity: Activity?): NotificationCompat.Builder {
         val notificationIntent = getNotificationIntent(currentActivity)
-        notificationIntent.putExtra("start", SystemClock.elapsedRealtime() - currentActivity!!.currentTime)
+        notificationIntent.putExtra("start", SystemClock.elapsedRealtime() - currentActivity!!.current_time)
 
         val notificationPendingIntent = PendingIntent.getActivity(context,
                 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
@@ -55,7 +55,7 @@ class SetNotification(val context: Context) {
                 0, notificationStopIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         val remoteViews = RemoteViews(context.packageName, R.layout.notification)
         remoteViews.setTextViewText(R.id.textView, currentActivity.name)
-        remoteViews.setChronometer(R.id.timer, SystemClock.elapsedRealtime() - currentActivity.currentTime, "%s", true)
+        remoteViews.setChronometer(R.id.timer, SystemClock.elapsedRealtime() - currentActivity.current_time, "%s", true)
         remoteViews.setOnClickPendingIntent(R.id.root, notificationPendingIntent)
         remoteViews.setOnClickPendingIntent(R.id.n_btn_stop, notificationPendingStop)
         return NotificationCompat.Builder(context, PRIMARY_CHANNEL_ID)
@@ -68,7 +68,7 @@ class SetNotification(val context: Context) {
                 .setOngoing(true)
     }
 
-    fun cancelNotification(activity: MyActivity?) {
+    fun cancelNotification(activity: Activity?) {
         mNotifyManager?.cancel(activity!!.id)
     }
 }

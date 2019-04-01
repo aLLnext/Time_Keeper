@@ -15,7 +15,7 @@ import kotlin.coroutines.CoroutineContext
 
 class ActivityViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: ActivityRepository
-    internal val allActivity: LiveData<List<Activity>>
+    internal var allActivity: LiveData<List<Activity>>
 
     private val parentJob = Job()
 

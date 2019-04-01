@@ -15,20 +15,19 @@ import com.example.toxaxab.timekeeper.R
 import com.timekeeper.Adapters.StatisticsActAdapter
 import com.timekeeper.Database.Entity.Activity
 import com.timekeeper.Model.ActivityViewModel
-import com.timekeeper.Model.MyActivity
 
 class StatisticsAct : Fragment() {
-    private lateinit var activityViewModel: ActivityViewModel
+    //private lateinit var activityViewModel: ActivityViewModel
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.fragment_statistics, container, false)
         val recycleView = v.findViewById<RecyclerView>(R.id.recyclerview)
         val adapter = StatisticsActAdapter(v.context)
         recycleView.adapter = adapter
         recycleView.layoutManager = LinearLayoutManager(v.context)
-        activityViewModel = ViewModelProviders.of(this).get(ActivityViewModel::class.java)
-        activityViewModel.allActivity.observe(this, Observer { acts ->
-            acts?.let { adapter.setData(it) }
-        })
+        //activityViewModel = ViewModelProviders.of(this).get(ActivityViewModel::class.java)
+        //activityViewModel.allActivity.observe(this, Observer { acts ->
+        //    acts?.let { adapter.setData(it) }
+        //})
         return v
     }
 
@@ -41,8 +40,8 @@ class StatisticsAct : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    fun insertInto(activity: MyActivity){
-        activityViewModel.insert(activity.toDB())
+    fun insertInto(activity: Activity){
+        //activityViewModel.insert(activity)
     }
 
     companion object {

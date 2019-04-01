@@ -1,5 +1,8 @@
 package com.timekeeper.UI.Navigation.ActivityTab
 
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.ContentValues
 import android.content.Context.MODE_PRIVATE
 import android.database.Cursor
@@ -13,11 +16,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.timekeeper.Adapters.ActivityActAdapter
-import com.timekeeper.Model.Supplier
+import com.timekeeper.Database.Entity.Activity.Supplier
 import com.example.toxaxab.timekeeper.R
 import com.timekeeper.Adapters.ActAdapter
+import com.timekeeper.Database.Entity.Activity
 import com.timekeeper.MainActivity
+import com.timekeeper.Model.ActivityViewModel
 import com.timekeeper.Model.Condition
 import kotlinx.android.synthetic.main.fragment_activity.view.*
 import kotlinx.coroutines.Dispatchers
@@ -29,27 +33,41 @@ class ActivityAct : Fragment() {
     //private var sPref: SharedPreferences? = null
     //private var editor: SharedPreferences.Editor? = null
     private var dataBase: SQLiteDatabase? = null
-    private lateinit var adapter: ActAdapter
+    private lateinit var activityViewModel: ActivityViewModel
+    private lateinit var main: MainActivity
     //@SuppressLint("CommitPrefEdits")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val v = inflater.inflate(R.layout.fragment_activity, container, false)
-        val layoutManager = LinearLayoutManager(v.context)
+        val rootView = inflater.inflate(R.layout.fragment_activity, container, false)
+        val layoutManager = LinearLayoutManager(rootView.context)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
-        //val rv = v!!.find<RecyclerView>(R.id.recyclerView)
-        //val id = activity?.intent?.getIntExtra("activity", 0)
-        v.recyclerView.layoutManager = layoutManager
-        val act = activity as MainActivity
-        adapter = ActAdapter(v.context)
+        rootView.recyclerView.layoutManager = layoutManager
+
+        main = activity as MainActivity
+        val adapter = ActAdapter(rootView.context, main)
         adapter.setData(Supplier.activities)
-        v.recyclerView.adapter = adapter
-        dataBase = context!!.openOrCreateDatabase("data.db", MODE_PRIVATE, null)
+        rootView.recyclerView.adapter = adapter
+
+        activityViewModel = ViewModelProviders.of(this).get(ActivityViewModel::class.java)
+        activityViewModel.allActivity.observe(this, Observer { acts ->
+            acts?.let { adapter.setData(it) }
+        })
+
+        /*dataBase = context!!.openOrCreateDatabase("data.db", MODE_PRIVATE, null)
         //dataBase!!.execSQL("DROP TABLE activities")
         dataBase!!.execSQL("CREATE TABLE IF NOT EXISTS activities(id INT, name VARCHAR(50), time LONG, timerBase LONG, condition BOOL)")
         if (dataBase!!.isOpen) {
             Toast.makeText(activity, "DATEBASE",
                     Toast.LENGTH_SHORT).show()
-        }
-        return v
+        }*/
+        return rootView
+    }
+
+    fun insertInto(activity: Activity) {
+        activityViewModel.insert(activity)
+    }
+
+    fun getAll(): LiveData<List<Activity>>{
+        return activityViewModel.allActivity
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,7 +78,7 @@ class ActivityAct : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        loadData()
+        //activityViewModel.allActivity = main.load()
         Toast.makeText(activity, "FirstFragment.onActivityCreated()",
                 Toast.LENGTH_SHORT).show()
         //Log.d("Fragment 1", "onActivityCreated")
@@ -75,8 +93,8 @@ class ActivityAct : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        loadData()
-        if (activity?.intent?.action != null) {
+        //activityViewModel.allActivity = main.load()
+        /*(if (activity?.intent?.action != null) {
             if (activity?.intent?.action == "STOP") {
                 val id = activity?.intent?.getIntExtra("activity", -1)
                 val timeStart = activity?.intent?.getLongExtra("start", 0)
@@ -84,7 +102,7 @@ class ActivityAct : Fragment() {
                 Supplier.activities[id].condition = Condition.ACTIVE
                 //adapter.
             }
-        }
+        }*/
         /*val id1 = activity?.intent?.getIntExtra("activity", -1)
         val timeStart = activity?.intent?.getLongExtra("start", 0)
         Toast.makeText(activity, "FirstFragment.onResume()  = $id1",
@@ -105,7 +123,7 @@ class ActivityAct : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        saveData()
+        main.saveAll(activityViewModel.allActivity)
         Toast.makeText(activity, "FirstFragment.onStop()",
                 Toast.LENGTH_SHORT).show()
         Log.d("Fragment 1", "onStop")
@@ -119,7 +137,7 @@ class ActivityAct : Fragment() {
     }
 
     override fun onDestroy() {
-        saveData()
+        main.saveAll(activityViewModel.allActivity)
         dataBase?.close()
         super.onDestroy()
         Toast.makeText(activity, "FirstFragment.onDestroy()",
@@ -138,21 +156,21 @@ class ActivityAct : Fragment() {
         val id = data.getInt(0)
         val currentTime = data.getLong(1)
         val timerBase = data.getLong(2)
-        val cond: Condition = if (data.getInt(3) == 0) Condition.ACTIVE else Condition.INACTIVE
+        val cond = data.getInt(3)
         with(Supplier.activities[id]) {
             if (timerBase == 0L)
                 return
             this.condition = cond
-            this.timerBase = timerBase
-            if (cond == Condition.ACTIVE)
-                this.currentTime += (SystemClock.elapsedRealtime() - this.timerBase - this.currentTime)
+            this.timer_base = timerBase
+            if (cond == 0)
+                this.current_time += (SystemClock.elapsedRealtime() - this.timer_base - this.current_time)
             else
-                this.currentTime = currentTime
+                this.current_time = currentTime
         }
     }
 
-    private fun loadData() {
-        if (dataBase!!.isOpen) {
+    //private fun loadData() {
+        /*if (dataBase!!.isOpen) {
             Toast.makeText(activity, "LOAD DATA",
                     Toast.LENGTH_SHORT).show()
         }else{
@@ -167,7 +185,7 @@ class ActivityAct : Fragment() {
                 initializeValues(data)
             }
             data.close()
-        }
+        }*/
         /*editor!!.clear()
         editor!!.commit()
         for (act in Supplier.activities) {
@@ -187,7 +205,7 @@ class ActivityAct : Fragment() {
         //editor!!.commit()*/
     }
 
-    fun saveData() = runBlocking {
+    /*fun saveData() = runBlocking {
         launch(Dispatchers.IO) {
             //dataBase!!.execSQL("DROP TABLE activities")
             //dataBase!!.execSQL("CREATE TABLE IF NOT EXISTS activities(id INT, name VARCHAR(50), time LONG, timerBase LONG, condition BOOL)")
@@ -199,9 +217,9 @@ class ActivityAct : Fragment() {
                 val row = ContentValues()
                 row.put("id", act.id)
                 row.put("name", act.name)
-                row.put("time", act.currentTime)
-                row.put("timerBase", act.timerBase)
-                row.put("condition", act.condition.ordinal)
+                row.put("time", act.current_time)
+                row.put("timerBase", act.timer_base)
+                row.put("condition", act.condition)
                 //if (act.currentTime != 0L) {
                 //    dataBase!!.execSQL("DROP TABLE activities")
                 //    dataBase!!.execSQL("CREATE TABLE IF NOT EXISTS activities(id INT, name VARCHAR(50), time LONG, timerBase LONG, condition BOOL)")
@@ -215,4 +233,4 @@ class ActivityAct : Fragment() {
             }
         }.join()
     }
-}
+}*/

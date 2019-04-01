@@ -7,7 +7,7 @@ import android.arch.persistence.room.RoomDatabase
 import android.content.Context
 import com.timekeeper.Database.DAO.ActivityDao
 import com.timekeeper.Database.Entity.Activity
-import com.timekeeper.Model.Supplier
+import com.timekeeper.Database.Entity.Activity.Supplier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -51,11 +51,11 @@ abstract class ActivityRoomDatabase : RoomDatabase() {
         fun populateDatabase(activityDao: ActivityDao) {
             activityDao.deleteAll()
             with(Supplier.activities[0]) {
-                val act = Activity(id, name, condition.ordinal, timerBase, currentTime, null)
+                val act = Activity(id, name, condition, timer_base, current_time, null)
                 activityDao.insert(act)
             }
             with(Supplier.activities[1]) {
-                val act = Activity(id, name, condition.ordinal, timerBase, currentTime, null)
+                val act = Activity(id, name, condition, timer_base, current_time, null)
                 activityDao.insert(act)
             }
 

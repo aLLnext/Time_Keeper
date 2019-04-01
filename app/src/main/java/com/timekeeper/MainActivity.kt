@@ -1,5 +1,6 @@
 package com.timekeeper
 
+import android.arch.lifecycle.LiveData
 import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
 
@@ -8,7 +9,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.os.Bundle
 import com.example.toxaxab.timekeeper.R
-import com.timekeeper.Model.MyActivity
+import com.timekeeper.Database.Entity.Activity
 import com.timekeeper.UI.Navigation.ActivityTab.ActivityAct
 import com.timekeeper.UI.Navigation.SettingsAct
 import com.timekeeper.UI.Navigation.StatisticsTab.StatisticsAct
@@ -42,13 +43,21 @@ class MainActivity : AppCompatActivity() {
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
     }
 
-    fun connecting(activity: MyActivity) {
-        val statFragment = fm!!.fragments[1]
-        statFragment?.let {
-            statFragment as StatisticsAct
-            statFragment.insertInto(activity)
+    fun saveAll(activities: LiveData<List<Activity>>){
+        val actFragment = fm!!.fragments[0] as ActivityAct
+        for(act in activities.value!!){
+            actFragment.insertInto(act)
         }
+    }
 
+    fun save(activity: Activity) {
+        val actFragment = fm!!.fragments[0] as ActivityAct
+        actFragment.insertInto(activity)
+    }
+
+    fun load(): LiveData<List<Activity>>{
+        val actFragment = fm!!.fragments[0] as ActivityAct
+        return actFragment.getAll()
     }
 
     //TO DEBUG
