@@ -39,7 +39,7 @@ class ActivityAct : Fragment() {
     }
 
     override fun onPause() {
-        saveAll()
+        //saveAll()
         super.onPause()
     }
 

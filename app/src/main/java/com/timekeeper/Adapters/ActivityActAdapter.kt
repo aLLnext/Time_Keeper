@@ -48,17 +48,16 @@ class ActivityActAdapter internal constructor(
                     0 -> {
                         itemView.ivCondition.setImageResource(R.drawable.ic_stop)
                         currentActivity!!.condition = 1
-                        stopTimer(currentActivity)
                         //val base = SystemClock.elapsedRealtime() - currentActivity!!.currentTime
                         //currentActivity!!.timerBase = base
-                        //startTimer(currentActivity)
+                        startTimer(currentActivity)
                         //sendNotification()
                     }
 
                     1 -> {
                         itemView.ivCondition.setImageResource(R.drawable.ic_play)
                         currentActivity!!.condition = 0
-                        //stopTimer(currentActivity)
+                        stopTimer(currentActivity)
                         //cancelNotification(currentActivity)
                     }
                 }
@@ -75,9 +74,10 @@ class ActivityActAdapter internal constructor(
                         itemView.ivCondition.setImageResource(R.drawable.ic_play)
                     }
                     1 -> {
-                        val sec = (SystemClock.elapsedRealtime() - activity.timer_base)
-                        Toast.makeText(context, "$sec seconds", Toast.LENGTH_SHORT).show()
-                        itemView.timer.base = SystemClock.elapsedRealtime() - sec
+                        val sec = (SystemClock.elapsedRealtime() - activity.timer_base) - activity.current_time
+                        //Toast.makeText(context, "${sec/1000} seconds", Toast.LENGTH_SHORT).show()
+                        activity.current_time += sec
+                        itemView.timer.base = SystemClock.elapsedRealtime() - activity.current_time
 
                         itemView.ivCondition.setImageResource(R.drawable.ic_stop)
                         startTimer(this)
@@ -87,18 +87,30 @@ class ActivityActAdapter internal constructor(
             this.currentActivity = activity
         }
 
-        private fun startTimer(activity: Activity?){
-                itemView.timer.base = SystemClock.elapsedRealtime() - activity!!.current_time
-                activity.timer_base = itemView.timer.base
-                itemView.timer.start()
-                if (activity.saved == 0) {
-                    ActActivity.update(activity)
-                    //Toast.makeText(context, "Saved start", Toast.LENGTH_SHORT).show()
-                }
+//        private fun startTimer(activity: Activity?) = runBlocking {
+//            job = launch(Dispatchers.IO) {
+//                itemView.timer.base = SystemClock.elapsedRealtime() - activity!!.current_time
+//                activity.timer_base = itemView.timer.base
+//                itemView.timer.start()
+//                if (activity.saved == 0) {
+//                    ActActivity.update(activity)
+//                }
+//            }
+//        }
+
+        private fun startTimer(activity: Activity?) {
+            itemView.timer.base = SystemClock.elapsedRealtime() - activity!!.current_time
+            activity.timer_base = itemView.timer.base
+            itemView.timer.start()
+            if (activity.saved == 0) {
+                ActActivity.update(activity)
+                //Toast.makeText(context, "Saved start", Toast.LENGTH_SHORT).show()
+            }
         }
 
         private fun stopTimer(activity: Activity?) {
             itemView.timer.stop()
+            //job!!.cancel()
             val time = (SystemClock.elapsedRealtime() - activity!!.timer_base) - activity.current_time
             activity.current_time += time
             if (activity.saved == 1) {
