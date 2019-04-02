@@ -1,44 +1,35 @@
 package com.timekeeper.Adapters
 
-import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.os.SystemClock
-import android.support.v4.app.NotificationCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RemoteViews
 import android.widget.Toast
 import com.example.toxaxab.timekeeper.R
 import com.timekeeper.Database.Entity.Activity
 import com.timekeeper.MainActivity
-import com.timekeeper.Model.Condition
 import com.timekeeper.Model.SetNotification
 import kotlinx.android.synthetic.main.list_item.view.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
-class ActAdapter internal constructor(
+/*class ActAdapterOld internal constructor(
         val context: Context,
         val main: MainActivity
-) : RecyclerView.Adapter<ActAdapter.ActivityViewHolder>() {
+) : RecyclerView.Adapter<ActAdapterOld.ActivityViewHolder>() {
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     private var activities = emptyList<Activity>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ActAdapter.ActivityViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ActAdapterOld.ActivityViewHolder {
         val rootView = inflater.inflate(R.layout.list_item, parent, false)
         return ActivityViewHolder(rootView)
     }
 
     override fun getItemCount() = activities.size
 
-    override fun onBindViewHolder(holder: ActAdapter.ActivityViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ActAdapterOld.ActivityViewHolder, position: Int) {
         holder.setActivity(activities[position], position)
     }
 
@@ -104,7 +95,7 @@ class ActAdapter internal constructor(
         private fun startTimer(activity: Activity?) {
             itemView.timer.base = SystemClock.elapsedRealtime() - activity!!.current_time
             activity.timer_base = itemView.timer.base
-            //main.connecting(activity)
+            main.save(activity)
             itemView.timer.start()
         }
 
@@ -121,10 +112,11 @@ class ActAdapter internal constructor(
             //job!!.cancel()
             val time = (SystemClock.elapsedRealtime() - activity!!.timer_base) - activity.current_time
             activity.current_time += time
+            //main.save(activity)
             val sec = time / 1000
             Toast.makeText(context, "$sec seconds", Toast.LENGTH_SHORT).show()
         }
-    }
+    }*/
 
     /*inner class ActivityViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         //private var mNotifyManager: NotificationManager? = null
@@ -197,8 +189,8 @@ class ActAdapter internal constructor(
         }
     }*/
 
-    internal fun setData(activities: List<Activity>) {
+    /*internal fun setData(activities: List<Activity>) {
         this.activities = activities
         notifyDataSetChanged()
     }
-}
+}*/

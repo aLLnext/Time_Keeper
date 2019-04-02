@@ -7,12 +7,14 @@ import android.arch.persistence.room.RoomDatabase
 import android.content.Context
 import com.timekeeper.Database.DAO.ActivityDao
 import com.timekeeper.Database.Entity.Activity
-import com.timekeeper.Database.Entity.Activity.Supplier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import android.arch.persistence.room.migration.Migration
 
-@Database(entities = [Activity::class], version = 1)
+
+
+@Database(entities = [Activity::class], version = 2)
 abstract class ActivityRoomDatabase : RoomDatabase() {
 
     abstract fun activityDao(): ActivityDao
@@ -21,13 +23,19 @@ abstract class ActivityRoomDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: ActivityRoomDatabase? = null
 
+        val MIGRATION_1_2: Migration = object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE activities ADD COLUMN saved INTEGER DEFAULT 0 NOT NULL")
+            }
+        }
+
         fun getDatabase(context: Context, scope: CoroutineScope): ActivityRoomDatabase {
-            val tempInstance = INSTANCE
+            //val tempInstance = INSTANCE
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                         context.applicationContext,
                         ActivityRoomDatabase::class.java,
-                        "Activity_database"
+                        "TimeKeeperDB"
                 ).addCallback(ActivityDatabaseCallback(scope))
                         .build()
                 INSTANCE = instance
@@ -41,24 +49,20 @@ abstract class ActivityRoomDatabase : RoomDatabase() {
         : RoomDatabase.Callback() {
         override fun onOpen(db: SupportSQLiteDatabase) {
             super.onOpen(db)
-            INSTANCE?.let { database ->
+            /*INSTANCE?.let { database ->
                 scope.launch(Dispatchers.IO) {
                     populateDatabase(database.activityDao())
                 }
-            }
+            }*/
         }
 
-        fun populateDatabase(activityDao: ActivityDao) {
+        /*fun populateDatabase(activityDao: ActivityDao) {
             activityDao.deleteAll()
-            with(Supplier.activities[0]) {
-                val act = Activity(id, name, condition, timer_base, current_time, null)
-                activityDao.insert(act)
-            }
-            with(Supplier.activities[1]) {
-                val act = Activity(id, name, condition, timer_base, current_time, null)
-                activityDao.insert(act)
-            }
+            val act1 = Activity(0, "Coding", 0, 0, 0, null, 0)
+            activityDao.insert(act1)
+            val act2 = Activity(1, "Sleeping", 0, 0, 0, null, 0)
+            activityDao.insert(act2)
 
-        }
+        }*/
     }
 }

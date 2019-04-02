@@ -7,9 +7,15 @@ import com.timekeeper.Database.Entity.Activity
 
 class ActivityRepository(private val activityDao: ActivityDao) {
     val allActivities: LiveData<List<Activity>> = activityDao.getAllActivities()
-
+    @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun insert(activity: Activity){
         activityDao.insert(activity)
     }
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+    suspend fun update(activity: Activity){
+        activityDao.update(activity)
+    }
+
 }

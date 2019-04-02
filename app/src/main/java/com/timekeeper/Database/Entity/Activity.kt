@@ -11,7 +11,9 @@ class Activity(@PrimaryKey @ColumnInfo(name = "id") val id: Int,
                @ColumnInfo(name = "condition") var condition: Int,
                @ColumnInfo(name = "timer_base") var timer_base: Long,
                @ColumnInfo(name = "current_time") var current_time: Long,
-               @ColumnInfo(name = "comment") var comment: String?) {
+               @ColumnInfo(name = "comment") var comment: String?,
+               //TODO ЩАС БУДЕТ КОСТЫЛЬ
+               @ColumnInfo(name = "saved") var saved: Int) {
     /*fun fromDB(): MyActivity {
         val tmp = MyActivity(name, id)
         tmp.comment = comment
@@ -20,11 +22,4 @@ class Activity(@PrimaryKey @ColumnInfo(name = "id") val id: Int,
         tmp.condition = if (condition == 0) Condition.ACTIVE else Condition.ACTIVE
         return tmp
     }*/
-
-    object Supplier {
-        val activities = listOf(
-                Activity(0, "Sleeping", 1, 0, 0, null),
-                Activity(1, "Coding", 1, 0, 0, null)
-        )
-    }
 }

@@ -3,6 +3,7 @@ package com.timekeeper.Model
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
+import android.util.Log
 import android.widget.Toast
 import com.timekeeper.Database.ActivityRoomDatabase
 import com.timekeeper.Database.Entity.Activity
@@ -15,7 +16,7 @@ import kotlin.coroutines.CoroutineContext
 
 class ActivityViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: ActivityRepository
-    internal var allActivity: LiveData<List<Activity>>
+    internal val allActivity: LiveData<List<Activity>>
 
     private val parentJob = Job()
 
@@ -37,6 +38,11 @@ class ActivityViewModel(application: Application) : AndroidViewModel(application
 
     fun insert(activity: Activity) = scope.launch(Dispatchers.IO) {
         repository.insert(activity)
-        print("SUCCESS")
+        Log.d("insert", "Success INSERT")
+    }
+
+    fun update(activity: Activity) = scope.launch(Dispatchers.IO) {
+        repository.update(activity)
+        Log.d("update", "Success UPDATE")
     }
 }

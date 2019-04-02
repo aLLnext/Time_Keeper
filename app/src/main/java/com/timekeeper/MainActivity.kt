@@ -1,6 +1,7 @@
 package com.timekeeper
 
 import android.arch.lifecycle.LiveData
+import android.content.Intent
 import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
 
@@ -8,6 +9,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import com.example.toxaxab.timekeeper.R
 import com.timekeeper.Database.Entity.Activity
 import com.timekeeper.UI.Navigation.ActivityTab.ActivityAct
@@ -41,24 +43,52 @@ class MainActivity : AppCompatActivity() {
         container.offscreenPageLimit = 2
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
+
+        val fab = findViewById<FloatingActionButton>(R.id.fab)
+        fab.setOnClickListener {
+            //val intent = Intent(this@MainActivity, NewWordActivity::class.java)
+            //startActivityForResult(intent, newWordActivityRequestCode)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intentData: Intent?) {
+        super.onActivityResult(requestCode, resultCode, intentData)
+
+        /*if (requestCode == newWordActivityRequestCode && resultCode == android.app.Activity.RESULT_OK) {
+            intentData?.let { data ->
+                val act = Word(data.getStringExtra(NewWordActivity.EXTRA_REPLY))
+                save(act)
+            }
+        } else {
+            Toast.makeText(
+                    applicationContext,
+                    "НЕЧЕГО СОХРАНЯТЬ",
+                    Toast.LENGTH_LONG
+            ).show()
+        }*/
     }
 
     fun saveAll(activities: LiveData<List<Activity>>){
         val actFragment = fm!!.fragments[0] as ActivityAct
         for(act in activities.value!!){
-            actFragment.insertInto(act)
+            actFragment.insert(act)
         }
     }
 
     fun save(activity: Activity) {
         val actFragment = fm!!.fragments[0] as ActivityAct
-        actFragment.insertInto(activity)
+        actFragment.insert(activity)
     }
 
-    fun load(): LiveData<List<Activity>>{
+    fun update(activity: Activity){
+        val actFragment = fm!!.fragments[0] as ActivityAct
+        actFragment.update(activity)
+    }
+
+    /*fun load(): LiveData<List<Activity>>{
         val actFragment = fm!!.fragments[0] as ActivityAct
         return actFragment.getAll()
-    }
+    }*/
 
     //TO DEBUG
     /*override fun onStart() {
