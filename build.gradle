@@ -8,7 +8,7 @@ buildscript {
         gson_version = '2.8.5'
         roomVersion = '1.1.1'
         archLifecycleVersion = '1.1.1'
-        coroutines = '0.26.1'
+        coroutines = '1.1.1'
     }
 
 

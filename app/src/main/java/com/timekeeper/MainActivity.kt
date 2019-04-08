@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
         }*/
     }
 
-    fun saveAll(activities: LiveData<List<Activity>>){
+    /*fun saveAll(activities: LiveData<List<Activity>>){
         val actFragment = fm!!.fragments[0] as ActivityAct
         for(act in activities.value!!){
             actFragment.insert(act)
@@ -78,12 +78,12 @@ class MainActivity : AppCompatActivity() {
     fun save(activity: Activity) {
         val actFragment = fm!!.fragments[0] as ActivityAct
         actFragment.insert(activity)
-    }
+    }*/
 
-    fun update(activity: Activity){
+    /*fun update(activity: Activity){
         val actFragment = fm!!.fragments[0] as ActivityAct
         actFragment.update(activity)
-    }
+    }*/
 
     /*fun load(): LiveData<List<Activity>>{
         val actFragment = fm!!.fragments[0] as ActivityAct

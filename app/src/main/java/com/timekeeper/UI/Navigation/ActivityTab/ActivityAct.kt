@@ -12,27 +12,26 @@ import android.view.ViewGroup
 import com.example.toxaxab.timekeeper.R
 import com.timekeeper.Adapters.ActivityActAdapter
 import com.timekeeper.Database.Entity.Activity
+import com.timekeeper.Database.Entity.Status
 import com.timekeeper.MainActivity
 import com.timekeeper.Model.ActivityViewModel
 import kotlinx.android.synthetic.main.fragment_activity.view.*
 
 class ActivityAct : Fragment() {
     private lateinit var activityViewModel: ActivityViewModel
-    private lateinit var main: MainActivity
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_activity, container, false)
         val layoutManager = LinearLayoutManager(rootView.context)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         rootView.recyclerView.layoutManager = layoutManager
-        main = activity as MainActivity
         val adapter = ActivityActAdapter(rootView.context, this)
         rootView.recyclerView.adapter = adapter
 
         activityViewModel = ViewModelProviders.of(this).get(ActivityViewModel::class.java)
+
         activityViewModel.allActivity.observe(this, Observer { acts ->
             acts?.let {
-                print(it)
-                adapter.setActivities(it)
+                adapter.setActivities(it, activityViewModel.DB)
             }
         })
         return rootView
@@ -43,13 +42,13 @@ class ActivityAct : Fragment() {
         super.onPause()
     }
 
-    fun update(activity: Activity) {
-        when(activity.saved){
-            0 -> activity.saved = 1
-            1 -> activity.saved = 0
-        }
-        activityViewModel.update(activity)
+    fun updateStatus(status: Status){
+        activityViewModel.updateStatus(status)
     }
+
+    /*fun update(activity: Activity) {
+        activityViewModel.update(activity)
+    }*/
 
     fun insert(activity: Activity) {
         activityViewModel.insert(activity)

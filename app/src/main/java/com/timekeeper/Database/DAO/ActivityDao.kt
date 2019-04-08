@@ -3,6 +3,7 @@ package com.timekeeper.Database.DAO
 import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.*
 import com.timekeeper.Database.Entity.Activity
+import com.timekeeper.Database.Entity.Status
 
 @Dao
 interface ActivityDao {
@@ -24,3 +25,4 @@ interface ActivityDao {
     @Query("DELETE FROM activities")
     fun deleteAll()
 }
+

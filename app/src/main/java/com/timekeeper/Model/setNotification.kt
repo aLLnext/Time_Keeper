@@ -10,6 +10,7 @@ import android.support.v4.app.NotificationCompat
 import android.widget.RemoteViews
 import com.example.toxaxab.timekeeper.R
 import com.timekeeper.Database.Entity.Activity
+import com.timekeeper.Database.Entity.Status
 import com.timekeeper.MainActivity
 
 class SetNotification(val context: Context, var mNotifyManager: NotificationManager?) {
@@ -30,8 +31,8 @@ class SetNotification(val context: Context, var mNotifyManager: NotificationMana
         }
     }
 
-    fun sendNotification(currentActivity: Activity?) {
-        val notifyBuilder = getNotificationBuilder(currentActivity)
+    fun sendNotification(currentActivity: Activity?, currentStatus: Status?) {
+        val notifyBuilder = getNotificationBuilder(currentActivity, currentStatus)
         mNotifyManager!!.notify(currentActivity!!.id, notifyBuilder.build())
     }
 
@@ -43,9 +44,9 @@ class SetNotification(val context: Context, var mNotifyManager: NotificationMana
         return notificationIntent
     }
 
-    private fun getNotificationBuilder(currentActivity: Activity?): NotificationCompat.Builder {
+    private fun getNotificationBuilder(currentActivity: Activity?, currentStatus: Status?): NotificationCompat.Builder {
         val notificationIntent = getNotificationIntent(currentActivity)
-        notificationIntent.putExtra("start", SystemClock.elapsedRealtime() - currentActivity!!.current_time)
+        notificationIntent.putExtra("start", SystemClock.elapsedRealtime() - currentStatus!!.current_time)
 
         val notificationPendingIntent = PendingIntent.getActivity(context,
                 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
@@ -54,8 +55,8 @@ class SetNotification(val context: Context, var mNotifyManager: NotificationMana
         val notificationPendingStop = PendingIntent.getActivity(context,
                 0, notificationStopIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         val remoteViews = RemoteViews(context.packageName, R.layout.notification)
-        remoteViews.setTextViewText(R.id.textView, currentActivity.name)
-        remoteViews.setChronometer(R.id.timer, SystemClock.elapsedRealtime() - currentActivity.current_time, "%s", true)
+        remoteViews.setTextViewText(R.id.textView, currentActivity!!.name)
+        remoteViews.setChronometer(R.id.timer, SystemClock.elapsedRealtime() - currentStatus.current_time, "%s", true)
         remoteViews.setOnClickPendingIntent(R.id.root, notificationPendingIntent)
         remoteViews.setOnClickPendingIntent(R.id.n_btn_stop, notificationPendingStop)
         return NotificationCompat.Builder(context, PRIMARY_CHANNEL_ID)

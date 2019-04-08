@@ -11,13 +11,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import android.arch.persistence.room.migration.Migration
+import com.timekeeper.Database.DAO.StatusDao
+import com.timekeeper.Database.Entity.Status
 
 
-
-@Database(entities = [Activity::class], version = 2)
+@Database(entities = [Activity::class, Status::class], version = 3)
 abstract class ActivityRoomDatabase : RoomDatabase() {
 
     abstract fun activityDao(): ActivityDao
+    abstract fun statusDao(): StatusDao
 
     companion object {
         @Volatile
@@ -29,14 +31,16 @@ abstract class ActivityRoomDatabase : RoomDatabase() {
             }
         }
 
+
         fun getDatabase(context: Context, scope: CoroutineScope): ActivityRoomDatabase {
             //val tempInstance = INSTANCE
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                         context.applicationContext,
                         ActivityRoomDatabase::class.java,
-                        "TimeKeeperDB"
-                ).addCallback(ActivityDatabaseCallback(scope))
+                        "testDB"
+                ).fallbackToDestructiveMigration()
+                        .addCallback(ActivityDatabaseCallback(scope))
                         .build()
                 INSTANCE = instance
                 return instance
@@ -49,20 +53,24 @@ abstract class ActivityRoomDatabase : RoomDatabase() {
         : RoomDatabase.Callback() {
         override fun onOpen(db: SupportSQLiteDatabase) {
             super.onOpen(db)
-            /*INSTANCE?.let { database ->
+            INSTANCE?.let { database ->
                 scope.launch(Dispatchers.IO) {
-                    populateDatabase(database.activityDao())
+                    populateDatabase(database.activityDao(), database.statusDao())
                 }
-            }*/
+            }
         }
 
-        /*fun populateDatabase(activityDao: ActivityDao) {
+        fun populateDatabase(activityDao: ActivityDao, statusDao: StatusDao) {
             activityDao.deleteAll()
-            val act1 = Activity(0, "Coding", 0, 0, 0, null, 0)
+            statusDao.deleteAll()
+            val status1 = Status(0, 0, 0, 0)
+            val status2 = Status(1, 0, 0, 0)
+            statusDao.insert(status1)
+            statusDao.insert(status2)
+            val act1 = Activity(0, "Coding", null, 0)
             activityDao.insert(act1)
-            val act2 = Activity(1, "Sleeping", 0, 0, 0, null, 0)
+            val act2 = Activity(1, "Sleeping", null, 1)
             activityDao.insert(act2)
-
-        }*/
+        }
     }
 }
