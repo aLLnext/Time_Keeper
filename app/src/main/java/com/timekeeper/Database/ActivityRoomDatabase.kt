@@ -53,11 +53,11 @@ abstract class ActivityRoomDatabase : RoomDatabase() {
         : RoomDatabase.Callback() {
         override fun onOpen(db: SupportSQLiteDatabase) {
             super.onOpen(db)
-            INSTANCE?.let { database ->
-                scope.launch(Dispatchers.IO) {
-                    populateDatabase(database.activityDao(), database.statusDao())
-                }
-            }
+//            INSTANCE?.let { database ->
+//                scope.launch(Dispatchers.IO) {
+//                    populateDatabase(database.activityDao(), database.statusDao())
+//                }
+//            }
         }
 
         fun populateDatabase(activityDao: ActivityDao, statusDao: StatusDao) {

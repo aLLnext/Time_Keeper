@@ -1,10 +1,15 @@
 package com.timekeeper.Database.DAO
 
+import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.*
+import com.timekeeper.Database.Entity.Activity
 import com.timekeeper.Database.Entity.Status
 
 @Dao
 interface StatusDao {
+    @Query("SELECT * FROM status ORDER BY id")
+    fun getAllStatuses(): List<Status>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(status: Status)
 

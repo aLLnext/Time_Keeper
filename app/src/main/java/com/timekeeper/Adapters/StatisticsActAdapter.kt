@@ -32,8 +32,8 @@ class StatisticsActAdapter internal constructor(
     override fun onBindViewHolder(holder: ActivityViewHolder, position: Int) {
         val current = activities[position]
 //        holder.cur_name.text = current.name
-//        holder.cur_timerbase.base = (SystemClock.elapsedRealtime() - current.current_time)
-//        holder.cur_time.base = ((SystemClock.elapsedRealtime() - current.timer_base) - current.current_time)
+//        holder.cur_timerbase.base = ( - current.current_time)
+//        holder.cur_time.base = (((SystemClock.elapsedRealtime() - System.currentTimeMillis() + Calendar.getInstance().timeInMillis) - current.timer_base) - current.current_time)
     }
 
     internal fun setData(activities: List<Activity>) {

@@ -1,10 +1,12 @@
 package com.timekeeper.Database.Repository
 
+import android.arch.lifecycle.LiveData
 import android.support.annotation.WorkerThread
 import com.timekeeper.Database.DAO.StatusDao
 import com.timekeeper.Database.Entity.Status
 
 class StatusRepository(private val statusDao: StatusDao) {
+
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun insertStat(status: Status){

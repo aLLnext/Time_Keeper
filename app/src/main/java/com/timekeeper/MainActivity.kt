@@ -9,7 +9,10 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.os.Bundle
+import android.os.SystemClock
 import android.support.design.widget.FloatingActionButton
+import android.text.format.DateUtils
+import android.util.Log
 import com.example.toxaxab.timekeeper.R
 import com.timekeeper.Database.Entity.Activity
 import com.timekeeper.UI.Navigation.ActivityTab.ActivityAct
@@ -17,6 +20,16 @@ import com.timekeeper.UI.Navigation.SettingsAct
 import com.timekeeper.UI.Navigation.StatisticsTab.StatisticsAct
 
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.notification.*
+import java.lang.System.nanoTime
+import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
+
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -49,6 +62,9 @@ class MainActivity : AppCompatActivity() {
             //val intent = Intent(this@MainActivity, NewWordActivity::class.java)
             //startActivityForResult(intent, newWordActivityRequestCode)
         }
+
+        Log.i("CALENDARr111",(Calendar.getInstance().timeInMillis.toString()))
+        Log.i("CALENDARr",(Calendar.getInstance().timeInMillis  - SystemClock.elapsedRealtime()).toString())
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intentData: Intent?) {

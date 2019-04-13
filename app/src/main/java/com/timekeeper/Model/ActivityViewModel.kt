@@ -52,7 +52,7 @@ class ActivityViewModel(application: Application) : AndroidViewModel(application
 
     fun updateStatus(status: Status) = scope.launch(Dispatchers.IO) {
         repositoryStat.updateStatus(status)
-        Log.d("update", "Success UPDATE")
+        Log.d("update", "Success STATUS UPDATE")
     }
 
     fun getStatus(activity: Activity): Status {

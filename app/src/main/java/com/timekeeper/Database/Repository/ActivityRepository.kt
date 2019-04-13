@@ -17,8 +17,6 @@ class ActivityRepository(private val activityDao: ActivityDao) {
     }
 
 
-
-
 //    @Suppress("RedundantSuspendModifier")
 //    @WorkerThread
 //    suspend fun update(activity: Activity){
