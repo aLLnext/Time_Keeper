@@ -89,8 +89,7 @@ class ActivityActAdapter internal constructor(
 
         internal fun setData(activity: Activity) {
             doAsync {
-                if (statuses.isEmpty())
-                    statuses = data.statusDao().getAllStatuses()
+                statuses = data.statusDao().getAllStatuses()
                 uiThread {
                     with(activity) {
                         val status = statuses[activity.id]

@@ -13,9 +13,12 @@ import android.os.SystemClock
 import android.support.design.widget.FloatingActionButton
 import android.text.format.DateUtils
 import android.util.Log
+import android.widget.Toast
 import com.example.toxaxab.timekeeper.R
 import com.timekeeper.Database.Entity.Activity
+import com.timekeeper.Database.Entity.Status
 import com.timekeeper.UI.Navigation.ActivityTab.ActivityAct
+import com.timekeeper.UI.Navigation.ActivityTab.NewActivity
 import com.timekeeper.UI.Navigation.SettingsAct
 import com.timekeeper.UI.Navigation.StatisticsTab.StatisticsAct
 
@@ -59,8 +62,8 @@ class MainActivity : AppCompatActivity() {
 
         val fab = findViewById<FloatingActionButton>(R.id.fab)
         fab.setOnClickListener {
-            //val intent = Intent(this@MainActivity, NewWordActivity::class.java)
-            //startActivityForResult(intent, newWordActivityRequestCode)
+            val intent = Intent(this@MainActivity, NewActivity::class.java)
+            startActivityForResult(intent, StatisticsAct.newActivityRequestCode)
         }
 
         Log.i("CALENDARr111",(Calendar.getInstance().timeInMillis.toString()))
@@ -70,18 +73,27 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, intentData: Intent?) {
         super.onActivityResult(requestCode, resultCode, intentData)
 
-        /*if (requestCode == newWordActivityRequestCode && resultCode == android.app.Activity.RESULT_OK) {
+        if (requestCode == StatisticsAct.newActivityRequestCode && resultCode == android.app.Activity.RESULT_OK) {
             intentData?.let { data ->
-                val act = Word(data.getStringExtra(NewWordActivity.EXTRA_REPLY))
-                save(act)
-            }
+                //doAsync {
+                //val name = data.getStringExtra(NewActivity.EXTRA_REPLY)
+                //Toast.makeText(applicationContext, name, Toast.LENGTH_LONG).show()
+                val info = data.getStringArrayListExtra(NewActivity.EXTRA_REPLY)
+                val actFragment = fm!!.fragments[0] as ActivityAct
+                var id = 0
+                if (actFragment.activityViewModel.allActivity.value != null) {
+                    id = actFragment.activityViewModel.allActivity.value!!.size
+                }
+                Log.i("id", id.toString())
+                val status = Status(id, 0, 0, 0)
+                val act = Activity(status.id, info[0], info[1], status.id)
+                actFragment.insert(status, act)
+                //insert(status, act)
+                //}
+            }!!
         } else {
-            Toast.makeText(
-                    applicationContext,
-                    "НЕЧЕГО СОХРАНЯТЬ",
-                    Toast.LENGTH_LONG
-            ).show()
-        }*/
+            Toast.makeText(applicationContext, "НЕЧЕГО СОХРАНЯТЬ", Toast.LENGTH_LONG).show()
+        }
     }
 
     /*fun saveAll(activities: LiveData<List<Activity>>){

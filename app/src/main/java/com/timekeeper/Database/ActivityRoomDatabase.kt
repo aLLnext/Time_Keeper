@@ -39,7 +39,7 @@ abstract class ActivityRoomDatabase : RoomDatabase() {
                         context.applicationContext,
                         ActivityRoomDatabase::class.java,
                         "testDB"
-                ).fallbackToDestructiveMigration()
+                ).fallbackToDestructiveMigration() //удаляет все при изменении базы
                         .addCallback(ActivityDatabaseCallback(scope))
                         .build()
                 INSTANCE = instance

@@ -40,20 +40,23 @@ class ActivityViewModel(application: Application) : AndroidViewModel(application
         super.onCleared()
         parentJob.cancel()
     }
-
-    fun insertStatus(status: Status) = scope.launch(Dispatchers.IO) {
+    fun insert(status: Status, activity: Activity) = scope.launch(Dispatchers.IO) {
         repositoryStat.insertStat(status)
+        repositoryAct.insertActivity(activity)
     }
 
-    fun insert(activity: Activity) = scope.launch(Dispatchers.IO) {
-        repositoryAct.insert(activity)
-        Log.d("insert", "Success INSERT")
-    }
 
     fun updateStatus(status: Status) = scope.launch(Dispatchers.IO) {
         repositoryStat.updateStatus(status)
         Log.d("update", "Success STATUS UPDATE")
     }
+
+    fun updateActivity(activity: Activity) = scope.launch(Dispatchers.IO) {
+        repositoryAct.updateActivity(activity)
+        Log.d("update", "Success STATUS UPDATE")
+    }
+
+
 
     fun getStatus(activity: Activity): Status {
         return repositoryStat.getStatus(activity.statusId)

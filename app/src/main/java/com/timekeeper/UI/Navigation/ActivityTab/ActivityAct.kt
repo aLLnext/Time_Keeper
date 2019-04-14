@@ -18,7 +18,7 @@ import com.timekeeper.Model.ActivityViewModel
 import kotlinx.android.synthetic.main.fragment_activity.view.*
 
 class ActivityAct : Fragment() {
-    private lateinit var activityViewModel: ActivityViewModel
+    internal lateinit var activityViewModel: ActivityViewModel
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_activity, container, false)
         val layoutManager = LinearLayoutManager(rootView.context)
@@ -37,12 +37,7 @@ class ActivityAct : Fragment() {
         return rootView
     }
 
-    override fun onPause() {
-        //saveAll()
-        super.onPause()
-    }
-
-    fun updateStatus(status: Status){
+    fun updateStatus(status: Status) {
         activityViewModel.updateStatus(status)
     }
 
@@ -50,13 +45,8 @@ class ActivityAct : Fragment() {
         activityViewModel.update(activity)
     }*/
 
-    fun insert(activity: Activity) {
-        activityViewModel.insert(activity)
+    fun insert(status: Status, activity: Activity) {
+        activityViewModel.insert(status, activity)
     }
 
-    fun saveAll(){
-        for (act in activityViewModel.allActivity.value!!){
-            activityViewModel.insert(act)
-        }
-    }
 }
