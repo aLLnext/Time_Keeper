@@ -1,5 +1,7 @@
 package com.timekeeper
 
+import android.arch.lifecycle.LiveData
+import android.content.Intent
 import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
 
@@ -7,12 +9,23 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.os.Bundle
+import android.os.SystemClock
+import android.support.design.widget.FloatingActionButton
+import android.text.format.DateUtils
+import android.util.Log
+import android.widget.Toast
 import com.example.toxaxab.timekeeper.R
-import com.timekeeper.UI.Navigation.ActivityAct
+import com.timekeeper.Database.Entity.Activity
+import com.timekeeper.Database.Entity.Status
+import com.timekeeper.UI.Navigation.ActivityTab.ActivityAct
+import com.timekeeper.UI.Navigation.ActivityTab.NewActivity
 import com.timekeeper.UI.Navigation.SettingsAct
-import com.timekeeper.UI.Navigation.StatisticsAct
+import com.timekeeper.UI.Navigation.StatisticsTab.StatisticsAct
 
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
+
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,10 +38,11 @@ class MainActivity : AppCompatActivity() {
      * [android.support.v4.app.FragmentStatePagerAdapter].
      */
     private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
-
+    private var fm: FragmentManager? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        fm = supportFragmentManager
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
@@ -39,36 +53,34 @@ class MainActivity : AppCompatActivity() {
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
 
-        /*fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }*/
+        val fab = findViewById<FloatingActionButton>(R.id.fab)
+        fab.setOnClickListener {
+            val intent = Intent(this@MainActivity, NewActivity::class.java)
+            startActivityForResult(intent, StatisticsAct.newActivityRequestCode)
+        }
 
-        /*val mBuilder:NotificationCompat.Builder = NotificationCompat.Builder(this, "1")
-                .setSmallIcon(R.drawable.ic_play)
-                .setContentTitle("My notification")
-                .setContentText("Hello World!")
-// Creates an explicit intent for an Activity in your app
-        val resultIntent = Intent(this, MainActivity::class.java)
+        Log.i("CALENDARr111",(Calendar.getInstance().timeInMillis.toString()))
+        Log.i("CALENDARr",(Calendar.getInstance().timeInMillis  - SystemClock.elapsedRealtime()).toString())
+    }
 
-// The stack builder object will contain an artificial back stack for the
-// started Activity.
-// This ensures that navigating backward from the Activity leads out of
-// your application to the Home screen.
-        val stackBuilder = TaskStackBuilder.create(this)
-// Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(MainActivity::class.java)
-// Adds the Intent that starts the Activity to the top of the stack
-        stackBuilder.addNextIntent(resultIntent)
-        val resultPendingIntent = stackBuilder.getPendingIntent(
-                0,
-                PendingIntent.FLAG_UPDATE_CURRENT
-        )
-        mBuilder.setContentIntent(resultPendingIntent)
-        val mNotificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
-// mId allows you to update the notification later on.
-        val mId = 1
-        mNotificationManager!!.notify(mId, mBuilder.build())*/
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intentData: Intent?) {
+        super.onActivityResult(requestCode, resultCode, intentData)
+
+        if (requestCode == StatisticsAct.newActivityRequestCode && resultCode == android.app.Activity.RESULT_OK) {
+            intentData?.let { data ->
+                val info = data.getStringArrayListExtra(NewActivity.EXTRA_REPLY)
+                val actFragment = fm!!.fragments[0] as ActivityAct
+                var id = 0
+                if (actFragment.activityViewModel.allActivity.value != null) {
+                    id = actFragment.activityViewModel.allActivity.value!!.size
+                }
+                val status = Status(id, 0, 0, 0)
+                val act = Activity(status.id, info[0], info[1], status.id)
+                actFragment.insert(status, act)
+            }
+        } else {
+            Toast.makeText(applicationContext, "НЕЧЕГО СОХРАНЯТЬ", Toast.LENGTH_LONG).show()
+        }
     }
 
     //TO DEBUG
@@ -124,17 +136,17 @@ class MainActivity : AppCompatActivity() {
         override fun getItem(position: Int): Fragment? {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            when (position) {
+            return when (position) {
                 0 -> {
-                    return ActivityAct()
+                    ActivityAct()
                 }
                 1 -> {
-                    return StatisticsAct()
+                    StatisticsAct()
                 }
                 2 -> {
-                    return SettingsAct()
+                    SettingsAct()
                 }
-                else -> return null
+                else -> null
             }
         }
 
@@ -144,17 +156,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun getPageTitle(position: Int): CharSequence? {
-            when (position) {
+            return when (position) {
                 0 -> {
-                    return resources.getString(R.string.tab_1)
+                    resources.getString(R.string.tab_1)
                 }
                 1 -> {
-                    return resources.getString(R.string.tab_2)
+                    resources.getString(R.string.tab_2)
                 }
                 2 -> {
-                    return resources.getString(R.string.tab_3)
+                    resources.getString(R.string.tab_3)
                 }
-                else -> return null
+                else -> null
             }
         }
     }
