@@ -33,7 +33,6 @@ abstract class ActivityRoomDatabase : RoomDatabase() {
 
 
         fun getDatabase(context: Context, scope: CoroutineScope): ActivityRoomDatabase {
-            //val tempInstance = INSTANCE
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                         context.applicationContext,

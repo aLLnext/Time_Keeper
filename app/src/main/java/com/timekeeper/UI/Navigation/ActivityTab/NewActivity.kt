@@ -32,7 +32,6 @@ class NewActivity : AppCompatActivity() {
                 }
                 val list = arrayListOf(name, comment)
                 replyIntent.putExtra(EXTRA_REPLY, list)
-                //replyIntent.putExtra(EXTRA_REPLY, name)
                 setResult(Activity.RESULT_OK, replyIntent)
             }
             finish()

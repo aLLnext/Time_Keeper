@@ -23,13 +23,6 @@ import com.timekeeper.UI.Navigation.SettingsAct
 import com.timekeeper.UI.Navigation.StatisticsTab.StatisticsAct
 
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.notification.*
-import java.lang.System.nanoTime
-import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -75,48 +68,20 @@ class MainActivity : AppCompatActivity() {
 
         if (requestCode == StatisticsAct.newActivityRequestCode && resultCode == android.app.Activity.RESULT_OK) {
             intentData?.let { data ->
-                //doAsync {
-                //val name = data.getStringExtra(NewActivity.EXTRA_REPLY)
-                //Toast.makeText(applicationContext, name, Toast.LENGTH_LONG).show()
                 val info = data.getStringArrayListExtra(NewActivity.EXTRA_REPLY)
                 val actFragment = fm!!.fragments[0] as ActivityAct
                 var id = 0
                 if (actFragment.activityViewModel.allActivity.value != null) {
                     id = actFragment.activityViewModel.allActivity.value!!.size
                 }
-                Log.i("id", id.toString())
                 val status = Status(id, 0, 0, 0)
                 val act = Activity(status.id, info[0], info[1], status.id)
                 actFragment.insert(status, act)
-                //insert(status, act)
-                //}
-            }!!
+            }
         } else {
             Toast.makeText(applicationContext, "НЕЧЕГО СОХРАНЯТЬ", Toast.LENGTH_LONG).show()
         }
     }
-
-    /*fun saveAll(activities: LiveData<List<Activity>>){
-        val actFragment = fm!!.fragments[0] as ActivityAct
-        for(act in activities.value!!){
-            actFragment.insert(act)
-        }
-    }
-
-    fun save(activity: Activity) {
-        val actFragment = fm!!.fragments[0] as ActivityAct
-        actFragment.insert(activity)
-    }*/
-
-    /*fun update(activity: Activity){
-        val actFragment = fm!!.fragments[0] as ActivityAct
-        actFragment.update(activity)
-    }*/
-
-    /*fun load(): LiveData<List<Activity>>{
-        val actFragment = fm!!.fragments[0] as ActivityAct
-        return actFragment.getAll()
-    }*/
 
     //TO DEBUG
     /*override fun onStart() {

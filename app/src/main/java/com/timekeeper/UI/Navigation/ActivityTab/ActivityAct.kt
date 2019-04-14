@@ -41,9 +41,9 @@ class ActivityAct : Fragment() {
         activityViewModel.updateStatus(status)
     }
 
-    /*fun update(activity: Activity) {
-        activityViewModel.update(activity)
-    }*/
+    fun updateActivity(activity: Activity) {
+        activityViewModel.updateActivity(activity)
+    }
 
     fun insert(status: Status, activity: Activity) {
         activityViewModel.insert(status, activity)

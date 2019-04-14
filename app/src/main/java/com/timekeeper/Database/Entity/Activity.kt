@@ -16,5 +16,3 @@ class Activity(@PrimaryKey val id: Int,
                @ColumnInfo(name = "name") var name: String,
                @ColumnInfo(name = "comment") var comment: String?,
                @ColumnInfo(name = "statusId") var statusId: Int)
-               //TODO ЩАС БУДЕТ КОСТЫЛЬ
-               //@ColumnInfo(name = "saved") var saved: Int)

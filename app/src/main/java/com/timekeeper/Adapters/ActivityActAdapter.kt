@@ -40,7 +40,6 @@ class ActivityActAdapter internal constructor(
 ) : RecyclerView.Adapter<ActivityActAdapter.ActivityViewHolder>() {
     private var activities = emptyList<Activity>()
     private var statuses = emptyList<Status>()
-    private lateinit var repository: ActivityRepository
     private lateinit var data: ActivityRoomDatabase
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ActivityActAdapter.ActivityViewHolder {
@@ -68,8 +67,6 @@ class ActivityActAdapter internal constructor(
                     0 -> {
                         itemView.ivCondition.setImageResource(R.drawable.ic_stop)
                         currentStatus!!.condition = 1
-                        //val base = (SystemClock.elapsedRealtime() - System.currentTimeMillis() + Calendar.getInstance().timeInMillis) - currentActivity!!.currentTime
-                        //currentActivity!!.timerBase = base
                         startTimer(currentActivity, currentStatus)
                         setNotify!!.sendNotification(currentActivity, currentStatus)
                     }
@@ -77,7 +74,7 @@ class ActivityActAdapter internal constructor(
                     1 -> {
                         itemView.ivCondition.setImageResource(R.drawable.ic_play)
                         currentStatus!!.condition = 0
-                        stopTimer(currentActivity, currentStatus)
+                        stopTimer(currentStatus)
                         setNotify!!.cancelNotification(currentActivity)
                     }
                 }
@@ -101,12 +98,8 @@ class ActivityActAdapter internal constructor(
                                 itemView.ivCondition.setImageResource(R.drawable.ic_play)
                             }
                             1 -> {
-                                //TODO СМОТРЕТЬ ТУТ(КОСЯКИ)
-                                //Toast.makeText(context, "NANO ${(SystemClock.elapsedRealtime() - System.currentTimeMillis() + Calendar.getInstance().timeInMillis)} base ${status.timer_base} current_time ${status.current_time}", Toast.LENGTH_LONG).show()
                                 val time = Calendar.getInstance().timeInMillis - status.timer_base
                                 status.current_time += time
-                                //itemView.timer.base = (SystemClock.elapsedRealtime() - System.currentTimeMillis() + Calendar.getInstance().timeInMillis) - status.current_time
-                                //Toast.makeText(context, "$time = ${time / 1000} sec", Toast.LENGTH_SHORT).show()
                                 itemView.ivCondition.setImageResource(R.drawable.ic_stop)
                                 startTimer(this, status)
                                 setNotify!!.sendNotification(this, status)
@@ -120,38 +113,23 @@ class ActivityActAdapter internal constructor(
             }
         }
 
-//        private fun startTimer(activity: Activity?) = runBlocking {
-//            job = launch(Dispatchers.IO) {
-//                itemView.timer.base = (SystemClock.elapsedRealtime() - System.currentTimeMillis() + Calendar.getInstance().timeInMillis) - activity!!.current_time
-//                activity.timer_base = itemView.timer.base
-//                itemView.timer.start()
-//                if (activity.saved == 0) {
-//                    ActActivity.update(activity)
-//                }
-//            }
-//        }
-
         private fun startTimer(activity: Activity?, status: Status?) {
             itemView.timer.base = SystemClock.elapsedRealtime() - status!!.current_time
             status.timer_base = Calendar.getInstance().timeInMillis
             itemView.timer.start()
             ActActivity.updateStatus(status)
-            //Toast.makeText(context, "Saved start", Toast.LENGTH_SHORT).show()
         }
 
-        private fun stopTimer(activity: Activity?, status: Status?) {
+        private fun stopTimer(status: Status?) {
             itemView.timer.stop()
-            //job!!.cancel()
             val time = Calendar.getInstance().timeInMillis - status!!.timer_base
             status.current_time += time
             ActActivity.updateStatus(status)
-            //Toast.makeText(context, "Saved finish", Toast.LENGTH_SHORT).show()
         }
     }
 
     internal fun setActivities(activities: List<Activity>, DB: ActivityRoomDatabase) {
         this.activities = activities
-        //this.statuses = DB.statusDao().getAllStatuses().value!!
         this.data = DB
         notifyDataSetChanged()
     }
