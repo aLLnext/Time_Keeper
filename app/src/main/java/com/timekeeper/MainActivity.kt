@@ -26,7 +26,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
 
-
 class MainActivity : AppCompatActivity() {
 
     /**
@@ -45,10 +44,11 @@ class MainActivity : AppCompatActivity() {
         fm = supportFragmentManager
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
+        mSectionsPagerAdapter = SectionsPagerAdapter(fm!!)
 
         // Set up the ViewPager with the sections adapter.
         container.adapter = mSectionsPagerAdapter
+
         container.offscreenPageLimit = 2
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
@@ -59,18 +59,18 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(intent, StatisticsAct.newActivityRequestCode)
         }
 
-        Log.i("CALENDARr111",(Calendar.getInstance().timeInMillis.toString()))
-        Log.i("CALENDARr",(Calendar.getInstance().timeInMillis  - SystemClock.elapsedRealtime()).toString())
+        Log.i("CALENDARr111", (Calendar.getInstance().timeInMillis.toString()))
+        Log.i("CALENDARr", (Calendar.getInstance().timeInMillis - SystemClock.elapsedRealtime()).toString())
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intentData: Intent?) {
         super.onActivityResult(requestCode, resultCode, intentData)
-
         if (requestCode == StatisticsAct.newActivityRequestCode && resultCode == android.app.Activity.RESULT_OK) {
             intentData?.let { data ->
                 val info = data.getStringArrayListExtra(NewActivity.EXTRA_REPLY)
                 val actFragment = fm!!.fragments[0] as ActivityAct
                 var id = 0
+                //TODO УБЕРИ КОСТЫЛЬ
                 if (actFragment.activityViewModel.allActivity.value != null) {
                     id = actFragment.activityViewModel.allActivity.value!!.size
                 }

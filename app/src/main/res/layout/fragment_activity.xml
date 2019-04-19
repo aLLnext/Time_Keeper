@@ -11,7 +11,7 @@
             android:layout_gravity="top"
             android:layout_width="match_parent"
             card_view:cardCornerRadius="4dp"
-            android:layout_margin="16dp" android:layout_height="180dp" android:background="@color/SeaBlue">
+            android:layout_margin="16dp" android:layout_height="160dp" android:background="@color/SeaBlue">
         <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

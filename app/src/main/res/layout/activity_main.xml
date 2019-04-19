@@ -35,7 +35,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/tab_2"/>
-
             <android.support.design.widget.TabItem
                     android:id="@+id/fragSettings"
                     android:layout_width="wrap_content"
@@ -59,7 +58,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
-            android:src="@drawable/ic_plus"/>
+            android:src="@drawable/ic_plus"
+            app:layout_behavior="com.timekeeper.UI.FAB_Hide_on_scroll"
+    />
 
 
 </android.support.design.widget.CoordinatorLayout>

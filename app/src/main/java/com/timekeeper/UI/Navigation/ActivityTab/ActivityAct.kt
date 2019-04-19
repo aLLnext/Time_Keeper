@@ -3,6 +3,7 @@ package com.timekeeper.UI.Navigation.ActivityTab
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
@@ -21,9 +22,11 @@ class ActivityAct : Fragment() {
     internal lateinit var activityViewModel: ActivityViewModel
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_activity, container, false)
+
         val layoutManager = LinearLayoutManager(rootView.context)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         rootView.recyclerView.layoutManager = layoutManager
+
         val adapter = ActivityActAdapter(rootView.context, this)
         rootView.recyclerView.adapter = adapter
 

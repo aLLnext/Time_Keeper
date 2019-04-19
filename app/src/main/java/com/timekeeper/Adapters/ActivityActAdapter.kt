@@ -103,7 +103,6 @@ class ActivityActAdapter internal constructor(
                                 itemView.ivCondition.setImageResource(R.drawable.ic_stop)
                                 startTimer(this, status)
                                 setNotify!!.sendNotification(this, status)
-
                             }
                         }
                         this@ActivityViewHolder.currentActivity = activity
