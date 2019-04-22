@@ -1,4 +1,4 @@
-package com.timekeeper.UI.Navigation
+package com.timekeeper.UI.Navigation.SettingsTab
 
 import android.os.Bundle
 import android.support.v4.app.Fragment

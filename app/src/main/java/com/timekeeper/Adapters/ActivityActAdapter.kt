@@ -109,11 +109,11 @@ class ActivityActAdapter internal constructor(
 
         private fun stopTimer(status: Status?) {
             itemView.ivCondition.setImageResource(R.drawable.ic_play)
-            currentStatus!!.condition = 0
+            status!!.condition = 0
 
             itemView.timer.stop()
             setNotify!!.cancelNotification(currentActivity!!.id)
-            val time = Calendar.getInstance().timeInMillis - status!!.timer_base
+            val time = Calendar.getInstance().timeInMillis - status.timer_base
             status.current_time += time
             ActActivity.updateStatus(status)
         }
@@ -121,10 +121,10 @@ class ActivityActAdapter internal constructor(
         fun stopTimer(id: Int, status: Status?) {
             val itemView = par.findViewById<View>(id)
             itemView.ivCondition.setImageResource(R.drawable.ic_play)
-            currentStatus!!.condition = 0
+            status!!.condition = 0
             itemView.timer.stop()
             setNotify!!.cancelNotification(id)
-            val time = Calendar.getInstance().timeInMillis - status!!.timer_base
+            val time = Calendar.getInstance().timeInMillis - status.timer_base
             status.current_time += time
             ActActivity.updateStatus(status)
         }
