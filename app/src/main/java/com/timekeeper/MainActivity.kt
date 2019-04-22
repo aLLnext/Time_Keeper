@@ -1,7 +1,9 @@
 package com.timekeeper
 
-import android.arch.lifecycle.LiveData
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
 
@@ -11,18 +13,21 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.os.Bundle
 import android.os.SystemClock
 import android.support.design.widget.FloatingActionButton
-import android.text.format.DateUtils
+import android.support.v4.content.LocalBroadcastManager
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import com.example.toxaxab.timekeeper.R
+import com.timekeeper.Adapters.ActivityActAdapter
 import com.timekeeper.Database.Entity.Activity
 import com.timekeeper.Database.Entity.Status
 import com.timekeeper.UI.Navigation.ActivityTab.ActivityAct
 import com.timekeeper.UI.Navigation.ActivityTab.NewActivity
-import com.timekeeper.UI.Navigation.SettingsAct
+import com.timekeeper.UI.Navigation.SettingsTab.SettingsAct
 import com.timekeeper.UI.Navigation.StatisticsTab.StatisticsAct
 
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.list_item.view.*
 import java.util.*
 
 
@@ -58,9 +63,18 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this@MainActivity, NewActivity::class.java)
             startActivityForResult(intent, StatisticsAct.newActivityRequestCode)
         }
+    }
 
-        Log.i("CALENDARr111", (Calendar.getInstance().timeInMillis.toString()))
-        Log.i("CALENDARr", (Calendar.getInstance().timeInMillis - SystemClock.elapsedRealtime()).toString())
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        val act = intent?.action
+        if (act == "STOP") {
+            val data = intent.getIntExtra("activity", -1)
+            val viewId = intent.getIntExtra("viewId", -1)
+            Log.i("ID", data.toString())
+            val actActivity = fm!!.fragments[0] as ActivityAct
+            actActivity.adapter.holder.stopTimer(viewId, actActivity.adapter.statuses[data])
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intentData: Intent?) {
@@ -91,12 +105,14 @@ class MainActivity : AppCompatActivity() {
         Log.i("MAIN", "onStart()")
     }
 
+
     override fun onResume() {
         super.onResume()
 
         Toast.makeText(applicationContext, "onResume()", Toast.LENGTH_SHORT).show()
         Log.i("MAIN", "onResume()")
     }
+
 
     override fun onPause() {
         super.onPause()
@@ -131,6 +147,7 @@ class MainActivity : AppCompatActivity() {
      * A [FragmentPagerAdapter] that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
+
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
         override fun getItem(position: Int): Fragment? {

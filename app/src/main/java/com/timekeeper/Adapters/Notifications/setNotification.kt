@@ -1,4 +1,4 @@
-package com.timekeeper.Model
+package com.timekeeper.Adapters.Notifications
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -12,7 +12,7 @@ import com.example.toxaxab.timekeeper.R
 import com.timekeeper.Database.Entity.Activity
 import com.timekeeper.Database.Entity.Status
 import com.timekeeper.MainActivity
-import java.util.*
+
 
 class SetNotification(val context: Context, var mNotifyManager: NotificationManager?) {
     private val PRIMARY_CHANNEL_ID = "primary_notification_channel"
@@ -32,26 +32,34 @@ class SetNotification(val context: Context, var mNotifyManager: NotificationMana
         }
     }
 
-    fun sendNotification(currentActivity: Activity?, currentStatus: Status?) {
-        val notifyBuilder = getNotificationBuilder(currentActivity, currentStatus)
+    fun sendNotification(currentActivity: Activity?, currentStatus: Status?, itemViewId: Int) {
+        val notifyBuilder = getNotificationBuilder(currentActivity, currentStatus, itemViewId)
         mNotifyManager!!.notify(currentActivity!!.id, notifyBuilder.build())
     }
 
 
     private fun getNotificationIntent(currentActivity: Activity?): Intent {
         val notificationIntent = Intent(context, MainActivity::class.java)
-        notificationIntent.putExtra("activity", currentActivity!!.id)
         notificationIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        //notificationIntent.putExtra("activity", currentActivity!!.id)
         return notificationIntent
     }
 
-    private fun getNotificationBuilder(currentActivity: Activity?, currentStatus: Status?): NotificationCompat.Builder {
+    private fun getStopNotificationIntent(currentActivity: Activity?, itemViewId: Int): Intent {
+        val notificationIntent = Intent(context, MainActivity::class.java)
+        notificationIntent.putExtra("activity", currentActivity!!.id)
+        notificationIntent.putExtra("viewId", itemViewId)
+        notificationIntent.action = "STOP"
+        return notificationIntent
+    }
+
+    private fun getNotificationBuilder(currentActivity: Activity?, currentStatus: Status?, itemViewId: Int): NotificationCompat.Builder {
         val notificationIntent = getNotificationIntent(currentActivity)
 
         val notificationPendingIntent = PendingIntent.getActivity(context,
                 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-        val notificationStopIntent = getNotificationIntent(currentActivity)
-        notificationStopIntent.action = "STOP"
+        val notificationStopIntent = getStopNotificationIntent(currentActivity, itemViewId)
+
         val notificationPendingStop = PendingIntent.getActivity(context,
                 0, notificationStopIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         val remoteViews = RemoteViews(context.packageName, R.layout.notification)
@@ -69,7 +77,7 @@ class SetNotification(val context: Context, var mNotifyManager: NotificationMana
                 .setOngoing(true)
     }
 
-    fun cancelNotification(activity: Activity?) {
-        mNotifyManager?.cancel(activity!!.id)
+    fun cancelNotification(id: Int) {
+        mNotifyManager?.cancel(id)
     }
 }

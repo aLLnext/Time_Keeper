@@ -17,17 +17,29 @@ import com.timekeeper.Database.Entity.Status
 import com.timekeeper.MainActivity
 import com.timekeeper.Model.ActivityViewModel
 import kotlinx.android.synthetic.main.fragment_activity.view.*
+import android.arch.persistence.room.ForeignKey.NO_ACTION
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.os.SystemClock
+import android.support.v4.content.ContextCompat.startActivity
+import android.widget.Toast
+import kotlinx.android.synthetic.main.list_item.view.*
+import java.util.*
+import android.content.IntentFilter
+
 
 class ActivityAct : Fragment() {
     internal lateinit var activityViewModel: ActivityViewModel
+    internal lateinit var adapter: ActivityActAdapter
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_activity, container, false)
-
         val layoutManager = LinearLayoutManager(rootView.context)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         rootView.recyclerView.layoutManager = layoutManager
 
-        val adapter = ActivityActAdapter(rootView.context, this)
+        adapter = ActivityActAdapter(rootView.context, this)
         rootView.recyclerView.adapter = adapter
 
         activityViewModel = ViewModelProviders.of(this).get(ActivityViewModel::class.java)
@@ -39,6 +51,7 @@ class ActivityAct : Fragment() {
         })
         return rootView
     }
+
 
     fun updateStatus(status: Status) {
         activityViewModel.updateStatus(status)
