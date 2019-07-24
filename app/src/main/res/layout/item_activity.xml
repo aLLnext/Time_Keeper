@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:background="@drawable/bgitemactivity"
+        android:orientation="horizontal"
+        android:layout_marginBottom="20dp"
+        android:layout_height="100dp">
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_marginStart="16dp"
+            android:layout_width="220dp"
+            android:layout_height="match_parent">
+
+        <TextView
+                android:id="@+id/titleact"
+                android:layout_marginTop="19dp"
+                android:textSize="22sp"
+                android:textColor="@color/colorAccent"
+                android:text="Activity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <Chronometer
+                android:id="@+id/fulltime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textSize="18sp"
+                android:textColor="@color/White"
+                android:format="00:00"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            
+            <Chronometer
+                    android:id="@+id/currenttime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="28sp"
+                    android:textColor="@color/White"
+                    android:format="00:00"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        <ImageView
+                android:background="@drawable/bgbuttonplay"
+                android:src="@drawable/ic_play_arrow_black_48dp"
+                android:id="@+id/btnplay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/White"/>
+
+    </LinearLayout>
+
+</LinearLayout>
