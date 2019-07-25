@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">TimeKeeperV2</string>
+    <string name="popup_title">Activity name</string>
+    <string name="popup_comment">Activity comment</string>
 </resources>

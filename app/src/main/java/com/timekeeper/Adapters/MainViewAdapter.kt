@@ -1,5 +1,6 @@
 package com.timekeeper.Adapters
 
+import android.app.AlertDialog
 import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import android.widget.Chronometer
 import android.widget.TextView
 import kotlinx.android.synthetic.main.item_activity.view.*
 import com.timekeeper.R
+import kotlinx.android.synthetic.main.popupwindow.view.*
 
 class MainViewAdapter(
     val context: Context,
@@ -17,7 +19,7 @@ class MainViewAdapter(
 
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, pos: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_activity, viewGroup, false))
+        return ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_activity, viewGroup, false), context)
     }
 
     override fun getItemCount() = activities.size
@@ -27,9 +29,31 @@ class MainViewAdapter(
     }
 
 
-    class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+    class ViewHolder(v: View, private val context: Context) : RecyclerView.ViewHolder(v) {
         val titleAct: TextView = v.titleact
         val fullTime: Chronometer = v.fulltime
         val currentTime: Chronometer = v.currenttime
+
+        init {
+            v.setOnClickListener {
+                showPopupWindow()
+            }
+
+            v.btnplay.setOnClickListener {
+                v.btnplay.setImageResource(R.drawable.ic_stop_black_48dp)
+            }
+
+        }
+
+        private fun showPopupWindow() {
+            val builder = AlertDialog.Builder(context)
+            builder.setTitle(R.string.popup_title)
+
+            val view = LayoutInflater.from(context).inflate(R.layout.popupwindow, null)
+            (view.popup_title as TextView).text = titleAct.text
+            builder.setView(view)
+            builder.show()
+        }
+
     }
 }

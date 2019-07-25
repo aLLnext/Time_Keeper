@@ -10,14 +10,14 @@
     <LinearLayout
             android:orientation="vertical"
             android:layout_marginStart="16dp"
-            android:layout_width="220dp"
+            android:layout_width="180dp"
             android:layout_height="match_parent">
 
         <TextView
                 android:id="@+id/titleact"
                 android:layout_marginTop="19dp"
                 android:textSize="22sp"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/colorAdd"
                 android:text="Activity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
@@ -28,42 +28,35 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:textSize="18sp"
-                android:textColor="@color/White"
+                android:textColor="@color/colorPrimary"
                 android:format="00:00"/>
 
     </LinearLayout>
 
     <LinearLayout
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="30dp"
-            android:layout_width="wrap_content"
+            android:layout_marginTop="25dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            
-            <Chronometer
-                    android:id="@+id/currenttime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="28sp"
-                    android:textColor="@color/White"
-                    android:format="00:00"/>
-
-    </LinearLayout>
-
-    <LinearLayout
             android:orientation="horizontal"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="30dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:weightSum="1.0"
+            android:layout_marginEnd="16dp">
 
-        <ImageView
-                android:background="@drawable/bgbuttonplay"
-                android:src="@drawable/ic_play_arrow_black_48dp"
-                android:id="@+id/btnplay"
+        <Chronometer
+                android:id="@+id/currenttime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/White"/>
+                android:textSize="36sp"
+                android:layout_weight="0.66"
+                android:textColor="@color/colorPrimary"
+                android:format="00:00"/>
+        <ImageView
+                android:layout_marginStart="10dp"
+                android:id="@+id/btnplay"
+                android:layout_weight="0.35"
+                android:background="@drawable/bgbuttonplay"
+                android:src="@drawable/ic_play_arrow_black_48dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
     </LinearLayout>
 

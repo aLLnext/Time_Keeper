@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    var activities: ArrayList<String> = arrayListOf("sleep", "code", "repeat")
+    var activities: ArrayList<String> = arrayListOf("sleep", "code", "repeat", "another thing", "else", "again")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
