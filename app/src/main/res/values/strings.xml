@@ -2,4 +2,8 @@
     <string name="app_name">TimeKeeperV2</string>
     <string name="popup_title">Activity name</string>
     <string name="popup_comment">Activity comment</string>
+    <string name="title_activity_navigation">NavigationActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_info">Info</string>
+    <string name="title_settings">Settings</string>
 </resources>
