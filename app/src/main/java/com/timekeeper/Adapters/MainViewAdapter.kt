@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Chronometer
 import android.widget.TextView
+import android.widget.Toast
 import kotlinx.android.synthetic.main.item_activity.view.*
 import com.timekeeper.R
 import kotlinx.android.synthetic.main.popupwindow.view.*
@@ -42,7 +43,6 @@ class MainViewAdapter(
             v.btnplay.setOnClickListener {
                 v.btnplay.setImageResource(R.drawable.ic_stop_black_48dp)
             }
-
         }
 
         private fun showPopupWindow() {
@@ -51,6 +51,9 @@ class MainViewAdapter(
 
             val view = LayoutInflater.from(context).inflate(R.layout.popupwindow, null)
             (view.popup_title as TextView).text = titleAct.text
+            view.btndelete.setOnClickListener{
+                Toast.makeText(context, "DELETE", Toast.LENGTH_SHORT).show()
+            }
             builder.setView(view)
             builder.show()
         }

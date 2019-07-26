@@ -4,6 +4,8 @@
     <string name="popup_comment">Activity comment</string>
     <string name="title_activity_navigation">NavigationActivity</string>
     <string name="title_home">Home</string>
-    <string name="title_info">Info</string>
+    <string name="title_info">Dashboard</string>
     <string name="title_settings">Settings</string>
+    <string name="popup_save">SAVE</string>
+    <string name="popup_delete">delete</string>
 </resources>
