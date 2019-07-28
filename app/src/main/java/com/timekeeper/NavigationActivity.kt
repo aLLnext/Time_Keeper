@@ -3,7 +3,7 @@ package com.timekeeper
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
-import com.timekeeper.Navigation_Fragment.InfoFragment
+import com.timekeeper.Navigation_Fragment.DashboardFragment
 import com.timekeeper.Navigation_Fragment.MainFragment
 import com.timekeeper.Navigation_Fragment.SettingsFragment
 import kotlinx.android.synthetic.main.activity_navigation.*
@@ -17,7 +17,7 @@ class NavigationActivity : AppCompatActivity() {
                     MainFragment()
                 }
                 R.id.navigation_info -> {
-                    InfoFragment()
+                    DashboardFragment()
                 }
                 R.id.navigation_settings -> {
                     SettingsFragment()
