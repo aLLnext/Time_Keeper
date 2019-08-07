@@ -33,7 +33,6 @@ class MainViewAdapter(
     class ViewHolder(v: View, private val context: Context) : RecyclerView.ViewHolder(v) {
         val titleAct: TextView = v.titleact
         val fullTime: Chronometer = v.fulltime
-        val currentTime: Chronometer = v.currenttime
 
         init {
             v.setOnClickListener {
