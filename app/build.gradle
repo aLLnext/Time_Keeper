@@ -36,4 +36,7 @@ dependencies {
 
     implementation 'com.rengwuxian.materialedittext:library:2.1.4'
 
+    //swipemenu
+    implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
+
 }

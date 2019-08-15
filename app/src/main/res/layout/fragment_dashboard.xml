@@ -46,7 +46,7 @@
                         android:src="@drawable/ic_person_black_62dp"/>
 
             </RelativeLayout>
-            
+
 
             <View
                     android:layout_marginTop="20dp"
