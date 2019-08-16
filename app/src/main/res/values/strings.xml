@@ -8,4 +8,6 @@
     <string name="title_settings">Settings</string>
     <string name="popup_save">SAVE</string>
     <string name="popup_delete">delete</string>
+    <string name="snackbar_title">Activity Deleted</string>
+    <string name="snackbar_undo">UNDO</string>
 </resources>

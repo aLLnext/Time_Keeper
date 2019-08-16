@@ -16,6 +16,10 @@ import com.timekeeper.R
 import kotlinx.android.synthetic.main.popupwindow.view.*
 import android.os.Bundle
 import com.timekeeper.Data.Activity
+import android.R.string
+import android.support.v4.view.accessibility.AccessibilityEventCompat.setAction
+import android.support.design.widget.Snackbar
+import android.R.id
 
 
 class MainViewAdapter(
@@ -23,6 +27,8 @@ class MainViewAdapter(
     var activities: ArrayList<Activity>
 ) : RecyclerView.Adapter<MainViewAdapter.MyViewHolder>() {
     private val viewBinderHelper = ViewBinderHelper()
+    private var deletedItem: Activity? = null
+    private var deletedPosition: Int? = null
 
     init {
         viewBinderHelper.setOpenOnlyOne(true)
@@ -41,12 +47,34 @@ class MainViewAdapter(
 
             holder.titleAct.text = activities[pos].name
             holder.deleteLayout.setOnClickListener {
-                activities.remove(activities[pos])
+                deletedPosition = pos
+                deletedItem = activities[pos]
+                activities.removeAt(pos)
                 notifyItemRemoved(pos)
                 notifyItemRangeChanged(pos, itemCount - pos)
                 Toast.makeText(context, "$pos+${activities.size}", Toast.LENGTH_SHORT).show()
+                showUndoSnackbar(holder.itemView)
             }
         }
+    }
+
+
+    private fun showUndoSnackbar(v: View) {
+        val snackbar = Snackbar.make(
+            v, R.string.snackbar_title,
+            Snackbar.LENGTH_LONG
+        )
+        snackbar.setAction(R.string.snackbar_undo) {
+            undoDelete()
+        }
+        snackbar.show()
+    }
+
+    private fun undoDelete() {
+        activities.add(deletedPosition!!, deletedItem!!)
+        notifyItemInserted(deletedPosition!!)
+        notifyItemRangeChanged(deletedPosition!!, itemCount)
+        viewBinderHelper.closeLayout(deletedItem!!.id.toString())
     }
 
     fun saveStates(outState: Bundle?) {
@@ -71,7 +99,8 @@ class MainViewAdapter(
 
         init {
 
-            v.setOnLongClickListener {
+            v.item_list.setOnLongClickListener {
+                Toast.makeText(context, "TAP", Toast.LENGTH_SHORT).show()
                 showPopupWindow()
                 true
             }
@@ -88,13 +117,9 @@ class MainViewAdapter(
 
             val view = LayoutInflater.from(context).inflate(R.layout.popupwindow, null)
             (view.popup_title as TextView).text = titleAct.text
-            view.btndelete.setOnClickListener {
-                Toast.makeText(context, "DELETE", Toast.LENGTH_SHORT).show()
-            }
             builder.setView(view)
             builder.show()
         }
-
 
     }
 }

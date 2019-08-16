@@ -10,22 +10,28 @@
         app:mode="same_level"
         app:dragEdge="right">
 
-    <FrameLayout
-            android:id="@+id/delete_layout"
+    <LinearLayout
             android:layout_width="100dp"
-            android:layout_height="match_parent"
-            android:background="#ffcc0000"
-            android:layout_marginStart="-50dp">
-
-        <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_clear_black_24dp"
-                android:layout_gravity="center"/>
-    </FrameLayout>
+            android:layout_height="match_parent">
+        <FrameLayout
+                android:background="@drawable/bgdelete_layout"
+                android:layout_margin="4dp"
+                android:id="@+id/delete_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+        >
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_clear_black_24dp"
+                    android:layout_gravity="center"/>
+        </FrameLayout>
+    </LinearLayout>
 
     <!-- Your main layout here -->
     <FrameLayout
+            android:id="@+id/item_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
