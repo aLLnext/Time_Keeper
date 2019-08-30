@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
           package="com.timekeeper">
 
     <application
@@ -9,6 +10,32 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+        <receiver
+                android:name=".Timer.TimerNotificationActionReceiver"
+                android:enabled="true"
+                android:exported="false">
+            <intent-filter>
+                <action android:name="stop"/>
+                <action android:name="pause"/>
+                <action android:name="resume"/>
+                <action android:name="start"/>
+            </intent-filter>
+        </receiver>
+        <receiver
+                android:name=".Timer.TimerReceiver"
+                android:enabled="true"
+                android:exported="false">
+        </receiver>
+
+        <activity
+                android:name=".Timer.TimerActivity"
+                android:label="@string/title_activity_timer"
+                android:parentActivityName=".NavigationActivity"
+                android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.timekeeper.NavigationActivity"/>
+        </activity>
         <activity
                 android:name=".NavigationActivity"
                 android:label="@string/title_activity_navigation">
@@ -17,9 +44,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-        </activity>
-        <activity android:name=".MainActivity">
-
         </activity>
     </application>
 

@@ -10,4 +10,5 @@
     <string name="popup_delete">delete</string>
     <string name="snackbar_title">Activity Deleted</string>
     <string name="snackbar_undo">UNDO</string>
+    <string name="title_activity_timer">TimerActivity</string>
 </resources>

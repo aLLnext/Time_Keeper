@@ -1,11 +1,11 @@
 package com.timekeeper
 
 import android.os.Bundle
-import android.support.design.widget.BottomNavigationView
-import android.support.v7.app.AppCompatActivity
-import com.timekeeper.Navigation_Fragment.DashboardFragment
-import com.timekeeper.Navigation_Fragment.MainFragment
-import com.timekeeper.Navigation_Fragment.SettingsFragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.appcompat.app.AppCompatActivity
+import com.timekeeper.Fragments.DashboardFragment
+import com.timekeeper.Fragments.MainFragment
+import com.timekeeper.Fragments.SettingsFragment
 import kotlinx.android.synthetic.main.activity_navigation.*
 
 class NavigationActivity : AppCompatActivity() {

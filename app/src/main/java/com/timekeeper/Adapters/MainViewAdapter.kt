@@ -2,7 +2,7 @@ package com.timekeeper.Adapters
 
 import android.app.AlertDialog
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,9 +17,12 @@ import kotlinx.android.synthetic.main.popupwindow.view.*
 import android.os.Bundle
 import com.timekeeper.Data.Activity
 import android.R.string
-import android.support.v4.view.accessibility.AccessibilityEventCompat.setAction
-import android.support.design.widget.Snackbar
+import androidx.core.view.accessibility.AccessibilityEventCompat.setAction
+import com.google.android.material.snackbar.Snackbar
 import android.R.id
+import android.content.Intent
+import androidx.core.content.ContextCompat
+import com.timekeeper.Timer.TimerActivity
 
 
 class MainViewAdapter(
@@ -89,7 +92,6 @@ class MainViewAdapter(
         viewBinderHelper.restoreStates(inState)
     }
 
-
     class MyViewHolder(v: View, private val context: Context) :
         RecyclerView.ViewHolder(v) {
         val titleAct: TextView = v.titleact
@@ -98,11 +100,15 @@ class MainViewAdapter(
         val deleteLayout = v.delete_layout
 
         init {
-
             v.item_list.setOnLongClickListener {
                 Toast.makeText(context, "TAP", Toast.LENGTH_SHORT).show()
                 showPopupWindow()
                 true
+            }
+
+            v.item_list.setOnClickListener {
+                val intent = Intent(context, TimerActivity::class.java)
+                ContextCompat.startActivity(context, intent, null)
             }
 
             v.btnplay.setOnClickListener {
