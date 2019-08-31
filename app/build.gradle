@@ -14,7 +14,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-       // vectorDrawables.useSupportLibrary = true
+        // vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -40,5 +40,15 @@ dependencies {
     //swipemenu
     implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
 
+    //progressbar
     implementation 'me.zhanghai.android.materialprogressbar:library:1.6.1'
+    //settings seekbar
+    implementation "androidx.legacy:legacy-preference-v14:1.0.0"
+    implementation "androidx.preference:preference:1.0.0"
+
+    implementation 'com.pavelsikun:material-seekbar-preference:2.3.0'
+
+
+
+
 }

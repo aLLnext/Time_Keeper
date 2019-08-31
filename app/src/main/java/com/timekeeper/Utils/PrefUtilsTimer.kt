@@ -6,9 +6,11 @@ import com.timekeeper.Timer.TimerActivity
 
 class PrefUtilsTimer {
     companion object {
-        fun getTimerLength(context: Context): Int {
+        private const val TIMER_LENGTH_ID = "com.timekeeper.timer.timer_length"
 
-            return 1
+        fun getTimerLength(context: Context): Int {
+            val preference = PreferenceManager.getDefaultSharedPreferences(context)
+            return preference.getInt(TIMER_LENGTH_ID, 10)
         }
 
         private const val PREVIOUS_TIMER_LENGTH_SECONDS_ID = "com.timekeeper.timer.previous_timer_length"

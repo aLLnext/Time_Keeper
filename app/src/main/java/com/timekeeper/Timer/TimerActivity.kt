@@ -68,12 +68,10 @@ class TimerActivity : AppCompatActivity() {
             timerState = TimerState.paused
             updateButtons()
         }
-        //setSupportActionBar(toolbar)
         fab_stop.setOnClickListener {
             timer.cancel()
             onTimerFinished()
         }
-        //supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun onResume() {
@@ -105,8 +103,6 @@ class TimerActivity : AppCompatActivity() {
     private fun initTimer() {
         timerState = PrefUtilsTimer.getTimerState(this)
 
-        setNewTimerLength()
-
         if (timerState == TimerState.stopped)
             setNewTimerLength()
         else
@@ -136,7 +132,7 @@ class TimerActivity : AppCompatActivity() {
 
         setNewTimerLength()
 
-        countdown_progressbar.progress = 0
+        countdown_progressbar.progress = timerLength.toInt()
 
         PrefUtilsTimer.setSecondsRemaining(timerLength, this)
         secondsRemaining = timerLength
@@ -178,7 +174,7 @@ class TimerActivity : AppCompatActivity() {
         if (secondsStr.length == 2) secondsStr
         else "0$secondsStr"}"
 
-        countdown_progressbar.progress = (timerLength - secondsRemaining).toInt()
+        countdown_progressbar.progress = (secondsRemaining).toInt()
     }
 
     private fun updateButtons() {
