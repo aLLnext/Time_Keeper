@@ -49,6 +49,7 @@ class MainViewAdapter(
             viewBinderHelper.bind(holder.swipeRevealLayout, activities[pos].id.toString())
 
             holder.titleAct.text = activities[pos].name
+
             holder.deleteLayout.setOnClickListener {
                 deletedPosition = pos
                 deletedItem = activities[pos]
@@ -57,6 +58,10 @@ class MainViewAdapter(
                 notifyItemRangeChanged(pos, itemCount - pos)
                 Toast.makeText(context, "$pos+${activities.size}", Toast.LENGTH_SHORT).show()
                 showUndoSnackbar(holder.itemView)
+            }
+
+            holder.edit_layout.setOnClickListener{
+                showPopupWindow(holder.itemView)
             }
         }
     }
@@ -71,6 +76,16 @@ class MainViewAdapter(
             undoDelete()
         }
         snackbar.show()
+    }
+
+    fun showPopupWindow(v: View) {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle(R.string.popup_title)
+
+        val view = LayoutInflater.from(context).inflate(R.layout.popupwindow, null)
+        (view.popup_title as TextView).text = v.titleact.text
+        builder.setView(view)
+        builder.show()
     }
 
     private fun undoDelete() {
@@ -98,14 +113,9 @@ class MainViewAdapter(
         val fullTime: Chronometer = v.fulltime
         val swipeRevealLayout: SwipeRevealLayout = v.swipe_layout
         val deleteLayout = v.delete_layout
+        val edit_layout = v.edit_layout
 
         init {
-            v.item_list.setOnLongClickListener {
-                Toast.makeText(context, "TAP", Toast.LENGTH_SHORT).show()
-                showPopupWindow()
-                true
-            }
-
             v.item_list.setOnClickListener {
                 val intent = Intent(context, TimerActivity::class.java)
                 ContextCompat.startActivity(context, intent, null)
@@ -117,15 +127,7 @@ class MainViewAdapter(
         }
 
 
-        private fun showPopupWindow() {
-            val builder = AlertDialog.Builder(context)
-            builder.setTitle(R.string.popup_title)
 
-            val view = LayoutInflater.from(context).inflate(R.layout.popupwindow, null)
-            (view.popup_title as TextView).text = titleAct.text
-            builder.setView(view)
-            builder.show()
-        }
 
     }
 }

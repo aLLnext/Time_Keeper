@@ -38,7 +38,8 @@ dependencies {
     implementation 'com.rengwuxian.materialedittext:library:2.1.4'
 
     //swipemenu
-    implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
+    implementation 'com.github.hydrated:SwipeRevealLayout:960abd4'
+    //implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
 
     //progressbar
     implementation 'me.zhanghai.android.materialprogressbar:library:1.6.1'

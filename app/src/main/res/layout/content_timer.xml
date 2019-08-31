@@ -10,6 +10,20 @@
         tools:context=".Timer.TimerActivity">
 
     <TextView
+            android:id="@+id/label_activity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="TEST"
+            android:textSize="50sp"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/text_countdown"
+    />
+
+
+    <TextView
             android:id="@+id/text_countdown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
