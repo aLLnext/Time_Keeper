@@ -15,7 +15,7 @@
             android:layout_height="198dp">
 
         <TextView
-                android:id="@+id/titlepage"
+                android:id="@+id/titlepageSettings"
                 android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -23,12 +23,22 @@
                 android:textColor="#FFFFFF"
                 android:text="Settings"
                 android:textAlignment="center"/>
+        <TextView
+                android:id="@+id/subtitleSettings"
+                android:textSize="18sp"
+                android:textColor="@color/colorAccent"
+                android:layout_marginTop="8dp"
+                android:text="Customize your day"
+                android:textAlignment="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
         <View
                 android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
                 android:background="@color/colorPrimary"
                 android:layout_height="1dp"/>
+
     </LinearLayout>
 
     <androidx.cardview.widget.CardView
