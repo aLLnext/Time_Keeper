@@ -21,11 +21,19 @@ import androidx.core.view.accessibility.AccessibilityEventCompat.setAction
 import com.google.android.material.snackbar.Snackbar
 import android.R.id
 import android.content.Intent
+import android.widget.LinearLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import androidx.core.content.ContextCompat.getSystemService
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.timekeeper.Timer.TimerActivity
+import kotlinx.android.synthetic.main.bottom_sheet.view.*
 
 
 class MainViewAdapter(
+    val timerActivity: TimerActivity,
+    val bottomSheet: CoordinatorLayout,
     val context: Context,
     var activities: ArrayList<Activity>
 ) : RecyclerView.Adapter<MainViewAdapter.MyViewHolder>() {
@@ -39,7 +47,7 @@ class MainViewAdapter(
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, pos: Int): MyViewHolder {
         val v = LayoutInflater.from(context).inflate(R.layout.item_activity, viewGroup, false)
-        return MyViewHolder(v, context)
+        return MyViewHolder(v, timerActivity, bottomSheet)
     }
 
     override fun getItemCount() = activities.size
@@ -60,7 +68,7 @@ class MainViewAdapter(
                 showUndoSnackbar(holder.itemView)
             }
 
-            holder.edit_layout.setOnClickListener{
+            holder.edit_layout.setOnClickListener {
                 showPopupWindow(holder.itemView)
             }
         }
@@ -107,26 +115,40 @@ class MainViewAdapter(
         viewBinderHelper.restoreStates(inState)
     }
 
-    class MyViewHolder(v: View, private val context: Context) :
+    class MyViewHolder(v: View, timerActivity: TimerActivity, bottomSheet: CoordinatorLayout) :
         RecyclerView.ViewHolder(v) {
         val titleAct: TextView = v.titleact
         val fullTime: Chronometer = v.fulltime
         val swipeRevealLayout: SwipeRevealLayout = v.swipe_layout
         val deleteLayout = v.delete_layout
         val edit_layout = v.edit_layout
+        private val sheetBehavior = BottomSheetBehavior.from(bottomSheet)
 
         init {
             v.item_list.setOnClickListener {
-                val intent = Intent(context, TimerActivity::class.java)
-                ContextCompat.startActivity(context, intent, null)
+                sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                bottomSheet.collapsed_text.text = v.titleact.text
+//                val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+//                val dialogView = inflater.inflate(R.layout.activity_bottom_timer, null)
+//                val dialog = BottomSheetDialog(context)
+//                dialog.setContentView(dialogView)
+//                dialog.show()
+                //val intent = Intent(context, TimerActivity::class.java)
+                //ContextCompat.startActivity(context, intent, null)
             }
 
             v.btnplay.setOnClickListener {
-                v.btnplay.setImageResource(R.drawable.ic_stop_black_48dp)
+                if (timerActivity.timerState == TimerActivity.TimerState.running) {
+                    v.btnplay.setImageResource(R.drawable.ic_play_arrow_black_48dp)
+                    timerActivity.setFabStop()
+                    sheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                } else {
+                    v.btnplay.setImageResource(R.drawable.ic_stop_black_48dp)
+                    sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                    timerActivity.setFabPlay()
+                }
             }
         }
-
-
 
 
     }

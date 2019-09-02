@@ -1,26 +1,25 @@
 package com.timekeeper.Timer
 
+
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.opengl.Visibility
-import android.os.Bundle
 import android.os.CountDownTimer
-import android.view.MenuItem
 import android.view.View
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
-import com.timekeeper.NavigationActivity
-import com.timekeeper.R
-import com.timekeeper.Utils.NotificationsUtils
+import com.timekeeper.Timer.TimerReceiver
 import com.timekeeper.Utils.PrefUtilsTimer
-
-import kotlinx.android.synthetic.main.activity_timer.*
-import kotlinx.android.synthetic.main.content_timer.*
+import kotlinx.android.synthetic.main.activity_timer.view.*
+import kotlinx.android.synthetic.main.content_timer.view.*
 import java.util.*
 
-class TimerActivity : AppCompatActivity() {
+class TimerActivity() {
+    private var view: View? = null
+
+    constructor(v: View) : this() {
+        view = v
+    }
+
 
     companion object {
         fun setAlarm(context: Context, nowSeconds: Long, secondsRemaining: Long): Long {
@@ -49,67 +48,39 @@ class TimerActivity : AppCompatActivity() {
         stopped, paused, running
     }
 
-    private lateinit var timer: CountDownTimer
-    private var timerLength: Long = 0
-    private var timerState = TimerState.stopped
+    lateinit var timer: CountDownTimer
+    var timerLength: Long = 0
+    var timerState = TimerState.stopped
+    var secondsRemaining = 0L
 
-    private var secondsRemaining = 0L
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_timer)
-
-        fab_play.setOnClickListener {
-            startTimer()
-            timerState = TimerState.running
-            updateButtons()
-        }
-
-        fab_pause.setOnClickListener {
-            timer.cancel()
-            timerState = TimerState.paused
-            updateButtons()
-        }
-        fab_stop.setOnClickListener {
-            timer.cancel()
-            onTimerFinished()
-        }
-
-        label_activity.text = "TEXT"
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Timer"
-
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        initTimer()
-
-        removeAlarm(this)
-        NotificationsUtils.hideTimerNotification(this)
-    }
-
-
-    override fun onPause() {
-        super.onPause()
-
-        if (timerState == TimerState.running) {
-            timer.cancel()
-            val wakeUpTime = setAlarm(this, nowSeconds, secondsRemaining)
-            NotificationsUtils.showTimerRunning(this, wakeUpTime)
-        } else if (timerState == TimerState.paused) {
-            NotificationsUtils.showTimerPaused(this)
-        }
-
-        PrefUtilsTimer.setPreviousTimerLengthSeconds(timerLength, this)
-        PrefUtilsTimer.setSecondsRemaining(secondsRemaining, this)
-        PrefUtilsTimer.setTimerState(timerState, this)
-    }
-
+    //    override fun onResume() {
+//        super.onResume()
+//
+//        initTimer()
+//
+//        removeAlarm(this)
+//        NotificationsUtils.hideTimerNotification(this)
+//    }
+//
+//
+//    override fun onPause() {
+//        super.onPause()
+//
+//        if (timerState == TimerState.running) {
+//            timer.cancel()
+//            val wakeUpTime = setAlarm(this, nowSeconds, secondsRemaining)
+//            NotificationsUtils.showTimerRunning(this, wakeUpTime)
+//        } else if (timerState == TimerState.paused) {
+//            NotificationsUtils.showTimerPaused(this)
+//        }
+//
+//        PrefUtilsTimer.setPreviousTimerLengthSeconds(timerLength, this)
+//        PrefUtilsTimer.setSecondsRemaining(secondsRemaining, this)
+//        PrefUtilsTimer.setTimerState(timerState, this)
+//    }
+//
     private fun initTimer() {
-        timerState = PrefUtilsTimer.getTimerState(this)
+        timerState = PrefUtilsTimer.getTimerState(view!!.context)
 
         if (timerState == TimerState.stopped)
             setNewTimerLength()
@@ -117,11 +88,11 @@ class TimerActivity : AppCompatActivity() {
             setPreviousTimerLength()
 
         secondsRemaining = if (timerState == TimerState.running || timerState == TimerState.paused)
-            PrefUtilsTimer.getSecondsRemaining(this)
+            PrefUtilsTimer.getSecondsRemaining(view!!.context)
         else
             timerLength
 
-        val alarmSetTime = PrefUtilsTimer.getAlarmSetTime(this)
+        val alarmSetTime = PrefUtilsTimer.getAlarmSetTime(view!!.context)
         if (alarmSetTime > 0)
             secondsRemaining -= nowSeconds - alarmSetTime
 
@@ -134,15 +105,14 @@ class TimerActivity : AppCompatActivity() {
         updateCountDownUI()
     }
 
-
-    private fun onTimerFinished() {
+    fun onTimerFinished() {
         timerState = TimerState.stopped
 
         setNewTimerLength()
 
-        countdown_progressbar.progress = timerLength.toInt()
+        view!!.countdown_progressbar.progress = timerLength.toInt()
 
-        PrefUtilsTimer.setSecondsRemaining(timerLength, this)
+        PrefUtilsTimer.setSecondsRemaining(timerLength, view!!.context)
         secondsRemaining = timerLength
 
         updateButtons()
@@ -163,45 +133,66 @@ class TimerActivity : AppCompatActivity() {
     }
 
     private fun setNewTimerLength() {
-        val lengthInMinutes = PrefUtilsTimer.getTimerLength(this)
+        val lengthInMinutes = PrefUtilsTimer.getTimerLength(view!!.context)
         timerLength = (lengthInMinutes * 60L)
-        countdown_progressbar.max = timerLength.toInt()
+        view!!.countdown_progressbar.max = timerLength.toInt()
     }
 
     private fun setPreviousTimerLength() {
-        timerLength = PrefUtilsTimer.getPreviousTimerLengthSeconds(this)
-        countdown_progressbar.max = timerLength.toInt()
+        timerLength = PrefUtilsTimer.getPreviousTimerLengthSeconds(view!!.context)
+        view!!.countdown_progressbar.max = timerLength.toInt()
     }
 
-    private fun updateCountDownUI() {
+    fun updateCountDownUI() {
 
         val minutesUntilFinished = secondsRemaining / 60
         val secondsInMinuteUntilFinished = secondsRemaining - minutesUntilFinished * 60
         val secondsStr = secondsInMinuteUntilFinished.toString()
-        text_countdown.text = "$minutesUntilFinished:${
+        view!!.text_countdown.text = "$minutesUntilFinished:${
         if (secondsStr.length == 2) secondsStr
         else "0$secondsStr"}"
 
-        countdown_progressbar.progress = (secondsRemaining).toInt()
+        view!!.countdown_progressbar.progress = (secondsRemaining).toInt()
     }
 
     private fun updateButtons() {
         when (timerState) {
             TimerState.running -> {
-                fab_play.isEnabled = false
-                fab_pause.isEnabled = true
-                fab_stop.isEnabled = true
+                view!!.fab_play.isEnabled = false
+                view!!.fab_pause.isEnabled = true
+                view!!.fab_stop.isEnabled = true
             }
             TimerState.stopped -> {
-                fab_play.isEnabled = true
-                fab_pause.isEnabled = false
-                fab_stop.isEnabled = false
+                view!!.fab_play.isEnabled = true
+                view!!.fab_pause.isEnabled = false
+                view!!.fab_stop.isEnabled = false
             }
             TimerState.paused -> {
-                fab_play.isEnabled = true
-                fab_pause.isEnabled = false
-                fab_stop.isEnabled = true
+                view!!.fab_play.isEnabled = true
+                view!!.fab_pause.isEnabled = false
+                view!!.fab_stop.isEnabled = true
             }
         }
+    }
+
+    fun setFabPlay() {
+        startTimer()
+        timerState = TimerActivity.TimerState.running
+        updateButtons()
+    }
+
+    fun setFabStop() {
+        timer.cancel()
+        onTimerFinished()
+    }
+
+    fun setFabPause() {
+        timer.cancel()
+        timerState = TimerActivity.TimerState.paused
+        updateButtons()
+    }
+
+    fun initializeTimer() {
+        initTimer()
     }
 }

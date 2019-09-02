@@ -10,6 +10,8 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+
+
         <receiver
                 android:name=".Timer.TimerNotificationActionReceiver"
                 android:enabled="true"
@@ -30,15 +32,16 @@
         <activity
                 android:name=".Timer.TimerActivity"
                 android:label="@string/title_activity_timer"
-                android:parentActivityName=".NavigationActivity"
+                android:parentActivityName=".Fragments.NavigationActivity"
                 android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
-                    android:value="com.timekeeper.NavigationActivity"/>
+                    android:value="com.timekeeper.Fragments.NavigationActivity"/>
         </activity>
         <activity
-                android:name=".NavigationActivity"
-                android:label="@string/title_activity_navigation">
+                android:name=".Fragments.NavigationActivity"
+                android:label="@string/title_activity_navigation"
+                android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
