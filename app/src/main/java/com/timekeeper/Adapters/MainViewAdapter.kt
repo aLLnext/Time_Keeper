@@ -15,19 +15,13 @@ import kotlinx.android.synthetic.main.item_activity.view.*
 import com.timekeeper.R
 import kotlinx.android.synthetic.main.popupwindow.view.*
 import android.os.Bundle
+import android.util.Log
 import com.timekeeper.Data.Activity
-import android.R.string
-import androidx.core.view.accessibility.AccessibilityEventCompat.setAction
 import com.google.android.material.snackbar.Snackbar
-import android.R.id
-import android.content.Intent
-import android.widget.LinearLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.content.ContextCompat
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import androidx.core.content.ContextCompat.getSystemService
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.timekeeper.Timer.TimerActivity
+import com.timekeeper.Utils.CONSTANTS
 import kotlinx.android.synthetic.main.bottom_sheet.view.*
 
 
@@ -56,7 +50,12 @@ class MainViewAdapter(
         if (pos >= 0 && pos < activities.size) {
             viewBinderHelper.bind(holder.swipeRevealLayout, activities[pos].id.toString())
 
+            val id = activities[pos].id
             holder.titleAct.text = activities[pos].name
+
+
+            if (timerActivity.timerState == TimerActivity.TimerState.stopped)
+                timerActivity.activityId = id
 
             holder.deleteLayout.setOnClickListener {
                 deletedPosition = pos
@@ -68,8 +67,48 @@ class MainViewAdapter(
                 showUndoSnackbar(holder.itemView)
             }
 
-            holder.edit_layout.setOnClickListener {
+            holder.editLayout.setOnClickListener {
                 showPopupWindow(holder.itemView)
+            }
+
+
+            holder.btnPlay.setOnClickListener {
+                if (timerActivity.timerState == TimerActivity.TimerState.stopped)
+                    timerActivity.activityId = id
+                Log.i("btnPLay", timerActivity.activityId.toString())
+                if (timerActivity.activityId == id || timerActivity.timerState == TimerActivity.TimerState.stopped) {
+                    bottomSheet.collapsed_text.text = holder.itemView.titleact.text
+                    if (timerActivity.timerState == TimerActivity.TimerState.running) {
+                        holder.btnPlay.setImageResource(R.drawable.ic_play_arrow_black_48dp)
+                        timerActivity.setFabStop()
+                        holder.sheetBehavior.isHideable = true
+                        holder.sheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                        //holder.fullTime.start()
+                    } else {
+                        holder.btnPlay.setImageResource(R.drawable.ic_stop_black_48dp)
+                        holder.sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                        timerActivity.setFabPlay()
+                        holder.sheetBehavior.isHideable = false
+                    }
+                }
+            }
+
+            holder.itemList.setOnClickListener {
+                if (timerActivity.timerState == TimerActivity.TimerState.stopped)
+                    timerActivity.activityId = id
+                Toast.makeText(context, id.toString(), Toast.LENGTH_SHORT).show()
+                Log.i("btnPLayITEM", timerActivity.activityId.toString())
+                if (timerActivity.activityId == id || timerActivity.timerState == TimerActivity.TimerState.stopped) {
+                    bottomSheet.collapsed_text.text = holder.itemView.titleact.text
+
+                    if (timerActivity.timerState != TimerActivity.TimerState.running) {
+                        if (holder.sheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED)
+                            holder.sheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                        else
+                            holder.sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                        //holder.fullTime.start()
+                    }
+                }
             }
         }
     }
@@ -121,34 +160,23 @@ class MainViewAdapter(
         val fullTime: Chronometer = v.fulltime
         val swipeRevealLayout: SwipeRevealLayout = v.swipe_layout
         val deleteLayout = v.delete_layout
-        val edit_layout = v.edit_layout
-        private val sheetBehavior = BottomSheetBehavior.from(bottomSheet)
+        val editLayout = v.edit_layout
+        val btnPlay = v.btnplay
+        val sheetBehavior = BottomSheetBehavior.from(bottomSheet)
+        val itemList = v.item_list
 
-        init {
-            v.item_list.setOnClickListener {
-                sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-                bottomSheet.collapsed_text.text = v.titleact.text
-//                val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-//                val dialogView = inflater.inflate(R.layout.activity_bottom_timer, null)
-//                val dialog = BottomSheetDialog(context)
-//                dialog.setContentView(dialogView)
-//                dialog.show()
-                //val intent = Intent(context, TimerActivity::class.java)
-                //ContextCompat.startActivity(context, intent, null)
-            }
-
-            v.btnplay.setOnClickListener {
-                if (timerActivity.timerState == TimerActivity.TimerState.running) {
-                    v.btnplay.setImageResource(R.drawable.ic_play_arrow_black_48dp)
-                    timerActivity.setFabStop()
-                    sheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-                } else {
-                    v.btnplay.setImageResource(R.drawable.ic_stop_black_48dp)
-                    sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-                    timerActivity.setFabPlay()
-                }
-            }
-        }
+//        init {
+//            v.item_list.setOnClickListener {
+//                sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+////                val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+////                val dialogView = inflater.inflate(R.layout.activity_bottom_timer, null)
+////                val dialog = BottomSheetDialog(context)
+////                dialog.setContentView(dialogView)
+////                dialog.show()
+//                //val intent = Intent(context, TimerActivity::class.java)
+//                //ContextCompat.startActivity(context, intent, null)
+//            }
+//        }
 
 
     }

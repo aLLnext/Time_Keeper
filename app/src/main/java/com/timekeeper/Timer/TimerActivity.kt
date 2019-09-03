@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.CountDownTimer
 import android.view.View
 import com.timekeeper.Timer.TimerReceiver
+import com.timekeeper.Utils.CONSTANTS
 import com.timekeeper.Utils.PrefUtilsTimer
 import kotlinx.android.synthetic.main.activity_timer.view.*
 import kotlinx.android.synthetic.main.content_timer.view.*
@@ -18,6 +19,7 @@ class TimerActivity() {
 
     constructor(v: View) : this() {
         view = v
+        initTimer()
     }
 
 
@@ -52,6 +54,7 @@ class TimerActivity() {
     var timerLength: Long = 0
     var timerState = TimerState.stopped
     var secondsRemaining = 0L
+    var activityId = 0
 
     //    override fun onResume() {
 //        super.onResume()
@@ -81,6 +84,7 @@ class TimerActivity() {
 //
     private fun initTimer() {
         timerState = PrefUtilsTimer.getTimerState(view!!.context)
+        activityId = PrefUtilsTimer.getActivityId(view!!.context)
 
         if (timerState == TimerState.stopped)
             setNewTimerLength()
@@ -113,6 +117,8 @@ class TimerActivity() {
         view!!.countdown_progressbar.progress = timerLength.toInt()
 
         PrefUtilsTimer.setSecondsRemaining(timerLength, view!!.context)
+        PrefUtilsTimer.setActivityId(activityId, view!!.context)
+
         secondsRemaining = timerLength
 
         updateButtons()

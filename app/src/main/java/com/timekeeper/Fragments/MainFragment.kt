@@ -52,6 +52,7 @@ class MainFragment : Fragment() {
         v = inflater.inflate(R.layout.fragment_main, null)
         val MLight = Typeface.createFromAsset(activity!!.assets, "fonts/Montserrat-Light.ttf")
         val MMedium = Typeface.createFromAsset(activity!!.assets, "fonts/Montserrat-Medium.ttf")
+
         v.titlepage!!.typeface = MMedium
         v.subtitle.typeface = MLight
         v.endpage.typeface = MLight
@@ -64,11 +65,19 @@ class MainFragment : Fragment() {
 
         val bottomSheetBehavior = BottomSheetBehavior.from(v.bottom_sheet)
 
+
+        Log.i("Timer_STATE", timerActivity.timerState.toString())
+        Log.i("Timer_id", timerActivity.activityId.toString())
+        if (timerActivity.timerState == TimerActivity.TimerState.running) {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            bottomSheetBehavior.isHideable = false
+        } else {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            bottomSheetBehavior.isHideable = true
+        }
         bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    Log.i("COLLAPDED", newState.toString())
-                }
+
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
@@ -77,20 +86,22 @@ class MainFragment : Fragment() {
         })
 
         v.fab_play.setOnClickListener {
+            //TODO change pic of current ListItem
             v.btnplay.setImageResource(R.drawable.ic_stop_black_48dp)
             timerActivity.setFabPlay()
+            bottomSheetBehavior.isHideable = false
         }
 
         v.fab_pause.setOnClickListener {
             v.btnplay.setImageResource(R.drawable.ic_play_arrow_black_48dp)
             timerActivity.setFabPause()
+            bottomSheetBehavior.isHideable = true
         }
         v.fab_stop.setOnClickListener {
             v.btnplay.setImageResource(R.drawable.ic_play_arrow_black_48dp)
             timerActivity.setFabStop()
+            bottomSheetBehavior.isHideable = true
         }
-
-        v.label_activity.text = "TEXT"
 
         return v
     }
@@ -119,6 +130,7 @@ class MainFragment : Fragment() {
         PrefUtilsTimer.setPreviousTimerLengthSeconds(timerActivity.timerLength, context!!)
         PrefUtilsTimer.setSecondsRemaining(timerActivity.secondsRemaining, context!!)
         PrefUtilsTimer.setTimerState(timerActivity.timerState, context!!)
+        PrefUtilsTimer.setActivityId(timerActivity.activityId, context!!)
     }
 
 
