@@ -32,7 +32,11 @@ import kotlinx.android.synthetic.main.fragment_main.view.*
 import kotlinx.android.synthetic.main.item_activity.view.*
 import java.util.*
 import com.timekeeper.Timer.TimerActivity
+import com.timekeeper.Utils.BottomOffsetDecoration
 import com.timekeeper.Utils.NotificationsUtils
+import android.widget.AbsListView
+import androidx.recyclerview.widget.RecyclerView
+
 
 class MainFragment : Fragment() {
 
@@ -56,14 +60,19 @@ class MainFragment : Fragment() {
         v.titlepage!!.typeface = MMedium
         v.subtitle.typeface = MLight
         v.endpage.typeface = MLight
-        timerActivity = TimerActivity(v)
+        timerActivity = TimerActivity(this, v)
         adapter = MainViewAdapter(timerActivity, v.bottom_sheet, this.context!!, activities)
         v.recycle_activity.layoutManager = LinearLayoutManager(activity)
         v.recycle_activity.adapter = adapter
+        val offsetPx = 150
+        val bottomOffsetDecoration = BottomOffsetDecoration(offsetPx)
+        v.recycle_activity.addItemDecoration(bottomOffsetDecoration)
+
         adapter!!.notifyDataSetChanged()
 
-
         val bottomSheetBehavior = BottomSheetBehavior.from(v.bottom_sheet)
+
+
 
 
         Log.i("Timer_STATE", timerActivity.timerState.toString())
@@ -75,13 +84,51 @@ class MainFragment : Fragment() {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             bottomSheetBehavior.isHideable = true
         }
+
+
+        v.recycle_activity.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (timerActivity.timerState == TimerActivity.TimerState.stopped &&
+                    bottomSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED)
+                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
+//                if (dy > 0) {
+//                    // Scrolling up
+//                } else {
+//                    // Scrolling down
+//                }
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+                when (newState) {
+                    AbsListView.OnScrollListener.SCROLL_STATE_FLING -> {
+                        Log.i("SCROLL_STATE_FLING", "SCROLL_STATE_FLING")
+                        // Do something
+                    }
+                    AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL -> {
+                        Log.i("TOUCH", "SCROLL_STATE_TOUCH")
+                        // Do something
+                    }
+                    else -> {
+                        // Do something
+                    }
+                }
+            }
+        })
+
+
+
         bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-
+                Log.i("onStateChanged", "onStateChanged")
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
-
+                Log.i("onSlide", "onSlide")
             }
         })
 

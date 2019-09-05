@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
             android:layout_margin="@dimen/fab_bigger_margin"
-            app:srcCompat="@drawable/ic_stop_black_48dp"/>
+            app:srcCompat="@drawable/ic_pause_black_48dp"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_play"

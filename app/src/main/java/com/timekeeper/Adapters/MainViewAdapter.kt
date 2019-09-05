@@ -54,8 +54,12 @@ class MainViewAdapter(
             holder.titleAct.text = activities[pos].name
 
 
-            if (timerActivity.timerState == TimerActivity.TimerState.stopped)
+            if (timerActivity.timerState == TimerActivity.TimerState.stopped) {
                 timerActivity.activityId = id
+                holder.btnPlay.setImageResource(R.drawable.ic_play_arrow_black_48dp)
+            } else if (id == timerActivity.activityId && timerActivity.timerState == TimerActivity.TimerState.paused) {
+                holder.btnPlay.setImageResource(R.drawable.ic_pause_black_48dp)
+            }
 
             holder.deleteLayout.setOnClickListener {
                 deletedPosition = pos
@@ -97,14 +101,14 @@ class MainViewAdapter(
                 if (timerActivity.timerState == TimerActivity.TimerState.stopped)
                     timerActivity.activityId = id
                 Toast.makeText(context, id.toString(), Toast.LENGTH_SHORT).show()
-                Log.i("btnPLayITEM", timerActivity.activityId.toString())
                 if (timerActivity.activityId == id || timerActivity.timerState == TimerActivity.TimerState.stopped) {
                     bottomSheet.collapsed_text.text = holder.itemView.titleact.text
-
+                    //timerActivity.current_view_id = holder.itemView.id
+                    Log.i("ID", holder.itemView.id.toString())
                     if (timerActivity.timerState != TimerActivity.TimerState.running) {
-                        if (holder.sheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED)
+                        if (holder.sheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED) {
                             holder.sheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-                        else
+                        } else
                             holder.sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                         //holder.fullTime.start()
                     }

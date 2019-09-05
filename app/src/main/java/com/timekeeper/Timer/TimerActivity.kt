@@ -6,7 +6,12 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.CountDownTimer
+import android.util.Log
 import android.view.View
+import android.widget.Button
+import android.widget.ImageView
+import com.timekeeper.Fragments.MainFragment
+import com.timekeeper.R
 import com.timekeeper.Timer.TimerReceiver
 import com.timekeeper.Utils.CONSTANTS
 import com.timekeeper.Utils.PrefUtilsTimer
@@ -16,9 +21,11 @@ import java.util.*
 
 class TimerActivity() {
     private var view: View? = null
+    private var parent: MainFragment? = null
 
-    constructor(v: View) : this() {
+    constructor(p: MainFragment, v: View) : this() {
         view = v
+        parent = p
         initTimer()
     }
 
@@ -55,6 +62,7 @@ class TimerActivity() {
     var timerState = TimerState.stopped
     var secondsRemaining = 0L
     var activityId = 0
+    var current_view_id: Int = 0
 
     //    override fun onResume() {
 //        super.onResume()
@@ -190,6 +198,9 @@ class TimerActivity() {
     fun setFabStop() {
         timer.cancel()
         onTimerFinished()
+        parent!!.adapter!!.notifyDataSetChanged()
+        Log.i("DATA", "DATA CHANGED")
+
     }
 
     fun setFabPause() {
