@@ -3,8 +3,11 @@ package com.timekeeper.Fragments
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import com.facebook.stetho.Stetho
 import com.timekeeper.R
 import kotlinx.android.synthetic.main.activity_navigation.*
+
 
 class NavigationActivity : AppCompatActivity() {
     private val main = MainFragment()
@@ -26,7 +29,6 @@ class NavigationActivity : AppCompatActivity() {
                 else -> null
             }
         }
-
         supportFragmentManager.beginTransaction().replace(R.id.fragment_container, selectedFragment!!).commit()
         return@OnNavigationItemSelectedListener true
     }
@@ -34,10 +36,12 @@ class NavigationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
+
+        Stetho.initializeWithDefaults(this)
         setContentView(R.layout.activity_navigation)
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-
         supportFragmentManager.beginTransaction().replace(R.id.fragment_container, main).commit()
+        //addFragmentsToManager()
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -50,7 +54,7 @@ class NavigationActivity : AppCompatActivity() {
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         super.onRestoreInstanceState(savedInstanceState)
-        if(main.adapter != null){
+        if (main.adapter != null) {
             val adapter = main.adapter
             adapter!!.restoreStates(savedInstanceState)
         }

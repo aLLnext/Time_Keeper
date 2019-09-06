@@ -22,7 +22,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.timekeeper.Timer.TimerActivity
 import com.timekeeper.Utils.CONSTANTS
-import kotlinx.android.synthetic.main.bottom_sheet.view.*
+import kotlinx.android.synthetic.main.activity_timer.view.*
 
 
 class MainViewAdapter(
@@ -53,12 +53,17 @@ class MainViewAdapter(
             val id = activities[pos].id
             holder.titleAct.text = activities[pos].name
 
-
             if (timerActivity.timerState == TimerActivity.TimerState.stopped) {
                 timerActivity.activityId = id
                 holder.btnPlay.setImageResource(R.drawable.ic_play_arrow_black_48dp)
-            } else if (id == timerActivity.activityId && timerActivity.timerState == TimerActivity.TimerState.paused) {
-                holder.btnPlay.setImageResource(R.drawable.ic_pause_black_48dp)
+            } else if (id == timerActivity.activityId) {
+                if (timerActivity.timerState == TimerActivity.TimerState.paused) {
+                    Log.i("name", activities[pos].name)
+                    holder.btnPlay.setImageResource(R.drawable.ic_pause_black_48dp)
+                } else if (timerActivity.timerState == TimerActivity.TimerState.running)
+                    holder.btnPlay.setImageResource(R.drawable.ic_stop_black_48dp)
+            } else {
+                holder.btnPlay.setImageResource(R.drawable.ic_play_arrow_black_48dp)
             }
 
             holder.deleteLayout.setOnClickListener {
@@ -79,6 +84,7 @@ class MainViewAdapter(
             holder.btnPlay.setOnClickListener {
                 if (timerActivity.timerState == TimerActivity.TimerState.stopped)
                     timerActivity.activityId = id
+                Log.i("id", id.toString())
                 Log.i("btnPLay", timerActivity.activityId.toString())
                 if (timerActivity.activityId == id || timerActivity.timerState == TimerActivity.TimerState.stopped) {
                     bottomSheet.collapsed_text.text = holder.itemView.titleact.text
@@ -98,13 +104,14 @@ class MainViewAdapter(
             }
 
             holder.itemList.setOnClickListener {
+                Log.i("ID", timerActivity.timerState.toString())
                 if (timerActivity.timerState == TimerActivity.TimerState.stopped)
                     timerActivity.activityId = id
                 Toast.makeText(context, id.toString(), Toast.LENGTH_SHORT).show()
                 if (timerActivity.activityId == id || timerActivity.timerState == TimerActivity.TimerState.stopped) {
                     bottomSheet.collapsed_text.text = holder.itemView.titleact.text
                     //timerActivity.current_view_id = holder.itemView.id
-                    Log.i("ID", holder.itemView.id.toString())
+
                     if (timerActivity.timerState != TimerActivity.TimerState.running) {
                         if (holder.sheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED) {
                             holder.sheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
@@ -147,6 +154,7 @@ class MainViewAdapter(
     }
 
     fun saveStates(outState: Bundle?) {
+        outState!!.putString("activityName", bottomSheet.collapsed_text.text.toString())
         viewBinderHelper.saveStates(outState)
     }
 
@@ -155,6 +163,8 @@ class MainViewAdapter(
      * Call this method in [android.app.Activity.onRestoreInstanceState]
      */
     fun restoreStates(inState: Bundle?) {
+        bottomSheet.collapsed_text.text = inState!!.getString("activityName")
+        Log.i("TEST_DATA", bottomSheet.collapsed_text.text.toString())
         viewBinderHelper.restoreStates(inState)
     }
 

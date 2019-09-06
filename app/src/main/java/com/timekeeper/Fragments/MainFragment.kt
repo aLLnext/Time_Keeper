@@ -25,8 +25,6 @@ import com.timekeeper.Timer.TimerReceiver
 import com.timekeeper.Utils.PrefUtilsTimer
 import kotlinx.android.synthetic.main.activity_timer.*
 import kotlinx.android.synthetic.main.activity_timer.view.*
-import kotlinx.android.synthetic.main.content_timer.*
-import kotlinx.android.synthetic.main.content_timer.view.*
 
 import kotlinx.android.synthetic.main.fragment_main.view.*
 import kotlinx.android.synthetic.main.item_activity.view.*
@@ -35,17 +33,22 @@ import com.timekeeper.Timer.TimerActivity
 import com.timekeeper.Utils.BottomOffsetDecoration
 import com.timekeeper.Utils.NotificationsUtils
 import android.widget.AbsListView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-
+import kotlinx.android.synthetic.main.item_activity.*
 
 class MainFragment : Fragment() {
-
-    //private val activity = this.getActivity() as NavigationActivity
 
     var activities: ArrayList<Activity> = arrayListOf(
         Activity(0, "sleep"), Activity(1, "code"),
         Activity(2, "repeat"), Activity(3, "another thing"), Activity(4, "else"), Activity(5, "again")
     )
+
+    companion object {
+        const val KEY = "MainFragment"
+    }
+
+
     private lateinit var v: View
 
     var adapter: MainViewAdapter? = null
@@ -72,9 +75,6 @@ class MainFragment : Fragment() {
 
         val bottomSheetBehavior = BottomSheetBehavior.from(v.bottom_sheet)
 
-
-
-
         Log.i("Timer_STATE", timerActivity.timerState.toString())
         Log.i("Timer_id", timerActivity.activityId.toString())
         if (timerActivity.timerState == TimerActivity.TimerState.running) {
@@ -91,7 +91,8 @@ class MainFragment : Fragment() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (timerActivity.timerState == TimerActivity.TimerState.stopped &&
-                    bottomSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED)
+                    bottomSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED
+                )
                     bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
 //                if (dy > 0) {
@@ -100,79 +101,68 @@ class MainFragment : Fragment() {
 //                    // Scrolling down
 //                }
             }
-
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-
-                when (newState) {
-                    AbsListView.OnScrollListener.SCROLL_STATE_FLING -> {
-                        Log.i("SCROLL_STATE_FLING", "SCROLL_STATE_FLING")
-                        // Do something
-                    }
-                    AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL -> {
-                        Log.i("TOUCH", "SCROLL_STATE_TOUCH")
-                        // Do something
-                    }
-                    else -> {
-                        // Do something
-                    }
-                }
-            }
-        })
-
-
-
-        bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                Log.i("onStateChanged", "onStateChanged")
-            }
-
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                Log.i("onSlide", "onSlide")
-            }
         })
 
         v.fab_play.setOnClickListener {
-            //TODO change pic of current ListItem
-            v.btnplay.setImageResource(R.drawable.ic_stop_black_48dp)
+            //btnplay.setImageResource(R.drawable.ic_stop_black_48dp)
             timerActivity.setFabPlay()
             bottomSheetBehavior.isHideable = false
         }
 
         v.fab_pause.setOnClickListener {
-            v.btnplay.setImageResource(R.drawable.ic_play_arrow_black_48dp)
+            //btnplay.setImageResource(R.drawable.ic_pause_black_48dp)
             timerActivity.setFabPause()
-            bottomSheetBehavior.isHideable = true
+            bottomSheetBehavior.isHideable = false
         }
         v.fab_stop.setOnClickListener {
-            v.btnplay.setImageResource(R.drawable.ic_play_arrow_black_48dp)
+            //btnplay.setImageResource(R.drawable.ic_play_arrow_black_48dp)
             timerActivity.setFabStop()
             bottomSheetBehavior.isHideable = true
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }
 
         return v
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        arguments?.let {
+            collapsed_text.text = it.getString(KEY)
+            Toast.makeText(context, it.getString(KEY), Toast.LENGTH_SHORT).show()
+            Log.i("onViewCreated", it.getString(KEY))
+        }
+    }
+
     override fun onResume() {
         super.onResume()
-
         timerActivity.initializeTimer()
 
         removeAlarm(context!!)
         NotificationsUtils.hideTimerNotification(context!!)
     }
 
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        Log.i("Attacjh", "Attach")
+    }
 
     override fun onPause() {
         super.onPause()
-
+        Log.i("PAUSE", "PAUSE")
         if (timerActivity.timerState == TimerActivity.TimerState.running) {
-            timerActivity.timer.cancel()
+            timerActivity.timer!!.cancel()
             val wakeUpTime = setAlarm(context!!, nowSeconds, timerActivity.secondsRemaining)
             NotificationsUtils.showTimerRunning(context!!, wakeUpTime)
         } else if (timerActivity.timerState == TimerActivity.TimerState.paused) {
             NotificationsUtils.showTimerPaused(context!!)
         }
+
+        val argument = Bundle()
+        argument.putString(KEY, collapsed_text.text.toString())
+
+        this.arguments = argument
+
 
         PrefUtilsTimer.setPreviousTimerLengthSeconds(timerActivity.timerLength, context!!)
         PrefUtilsTimer.setSecondsRemaining(timerActivity.secondsRemaining, context!!)
@@ -180,5 +170,18 @@ class MainFragment : Fragment() {
         PrefUtilsTimer.setActivityId(timerActivity.activityId, context!!)
     }
 
+
+//    override fun onSaveInstanceState(outState: Bundle) {
+//        super.onSaveInstanceState(outState)
+//        outState.putString("dataGotFromServer", collapsed_text.text.toString())
+//    }
+//
+//    override fun onActivityCreated(savedInstanceState: Bundle?) {
+//        super.onActivityCreated(savedInstanceState)
+//        if (savedInstanceState != null) {
+//            collapsed_text.text = savedInstanceState.getString("dataGotFromServer")
+//            Log.i("DATA_LOAD", collapsed_text.text.toString())
+//        }
+//    }
 
 }
