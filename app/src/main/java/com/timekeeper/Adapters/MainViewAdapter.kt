@@ -104,6 +104,10 @@ class MainViewAdapter(
             }
 
             holder.itemList.setOnClickListener {
+                if (timerActivity.activityId != id &&
+                    timerActivity.timerState == TimerActivity.TimerState.stopped
+                )
+                    holder.sheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                 Log.i("ID", timerActivity.timerState.toString())
                 if (timerActivity.timerState == TimerActivity.TimerState.stopped)
                     timerActivity.activityId = id
