@@ -16,28 +16,39 @@ import com.timekeeper.R
 import kotlinx.android.synthetic.main.popupwindow.view.*
 import android.os.Bundle
 import android.util.Log
-import com.timekeeper.Data.Activity
 import com.google.android.material.snackbar.Snackbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.timekeeper.Data.ActivityRoomDatabase
+import com.timekeeper.Data.Entity.Activity
+import com.timekeeper.Model.ActivityViewModel
 import com.timekeeper.Timer.TimerActivity
-import com.timekeeper.Utils.CONSTANTS
 import kotlinx.android.synthetic.main.activity_timer.view.*
 
 
 class MainViewAdapter(
     val timerActivity: TimerActivity,
     val bottomSheet: CoordinatorLayout,
-    val context: Context,
-    var activities: ArrayList<Activity>
+    val activityViewModel: ActivityViewModel,
+    val context: Context
 ) : RecyclerView.Adapter<MainViewAdapter.MyViewHolder>() {
+    private var activities = emptyList<Activity>()
     private val viewBinderHelper = ViewBinderHelper()
     private var deletedItem: Activity? = null
     private var deletedPosition: Int? = null
+    private lateinit var database: ActivityRoomDatabase
+
 
     init {
         viewBinderHelper.setOpenOnlyOne(true)
     }
+
+    internal fun setActivities(activities: List<Activity>, DB: ActivityRoomDatabase) {
+        this.activities = activities
+        this.database = DB
+        notifyDataSetChanged()
+    }
+
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, pos: Int): MyViewHolder {
         val v = LayoutInflater.from(context).inflate(R.layout.item_activity, viewGroup, false)
@@ -48,7 +59,7 @@ class MainViewAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, pos: Int) {
         if (pos >= 0 && pos < activities.size) {
-            viewBinderHelper.bind(holder.swipeRevealLayout, activities[pos].id.toString())
+            viewBinderHelper.bind(holder.swipeRevealLayout, pos.toString())
 
             val id = activities[pos].id
             holder.titleAct.text = activities[pos].name
@@ -69,9 +80,12 @@ class MainViewAdapter(
             holder.deleteLayout.setOnClickListener {
                 deletedPosition = pos
                 deletedItem = activities[pos]
-                activities.removeAt(pos)
-                notifyItemRemoved(pos)
-                notifyItemRangeChanged(pos, itemCount - pos)
+
+                activityViewModel.deleteActivity(deletedItem!!)
+                //database.activityDao().delete(deletedItem!!)
+                //activities.removeAt(pos)
+                //notifyItemRemoved(pos)
+                //notifyItemRangeChanged(pos, itemCount - pos)
                 Toast.makeText(context, "$pos+${activities.size}", Toast.LENGTH_SHORT).show()
                 showUndoSnackbar(holder.itemView)
             }
@@ -151,9 +165,10 @@ class MainViewAdapter(
     }
 
     private fun undoDelete() {
-        activities.add(deletedPosition!!, deletedItem!!)
-        notifyItemInserted(deletedPosition!!)
-        notifyItemRangeChanged(deletedPosition!!, itemCount)
+        activityViewModel.insertActivity(deletedItem!!)
+        //activities.add(deletedPosition!!, deletedItem!!)
+//        notifyItemInserted(deletedPosition!!)
+//        notifyItemRangeChanged(deletedPosition!!, itemCount)
         viewBinderHelper.closeLayout(deletedItem!!.id.toString())
     }
 
@@ -183,6 +198,9 @@ class MainViewAdapter(
         val sheetBehavior = BottomSheetBehavior.from(bottomSheet)
         val itemList = v.item_list
 
+        internal fun setData(activity: Activity) {
+
+        }
 //        init {
 //            v.item_list.setOnClickListener {
 //                sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
