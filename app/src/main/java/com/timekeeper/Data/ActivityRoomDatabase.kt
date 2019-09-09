@@ -48,7 +48,7 @@ abstract class ActivityRoomDatabase : RoomDatabase() {
             super.onOpen(db)
             INSTANCE?.let { database ->
                 scope.launch(Dispatchers.IO) {
-                    populateDatabase(database.activityDao())
+                    //populateDatabase(database.activityDao())
                 }
             }
         }

@@ -31,6 +31,13 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.timekeeper.Data.Entity.Activity
 import com.timekeeper.Model.ActivityViewModel
+import android.R.attr.scaleX
+import android.R.attr.scaleY
+import android.R.attr.start
+import android.content.Intent
+import androidx.annotation.NonNull
+import kotlinx.android.synthetic.main.fragment_main.*
+
 
 class MainFragment : Fragment() {
 
@@ -44,6 +51,7 @@ class MainFragment : Fragment() {
 
     companion object {
         const val KEY = "MainFragment"
+        const val REQUEST_KEY = 0//"com.timekeeper.MainFragment.Request"
     }
 
 
@@ -53,12 +61,19 @@ class MainFragment : Fragment() {
 
     private lateinit var timerActivity: TimerActivity
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (savedInstanceState == null) {
+            Log.i("SavedInstance", "OnCreate")
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.fragment_main, null)
         val MLight = Typeface.createFromAsset(activity!!.assets, "fonts/Montserrat-Light.ttf")
         val MMedium = Typeface.createFromAsset(activity!!.assets, "fonts/Montserrat-Medium.ttf")
 
-        v.titlepage!!.typeface = MMedium
+        v.titlepage.typeface = MMedium
         v.subtitle.typeface = MLight
         v.endpage.typeface = MLight
         timerActivity = TimerActivity(this, v)
@@ -74,8 +89,14 @@ class MainFragment : Fragment() {
 
         val bottomSheetBehavior = BottomSheetBehavior.from(v.bottom_sheet)
 
-        //dataBase!!.execSQL("CREATE TABLE IF NOT EXISTS activities(id INT, name VARCHAR(50), time LONG, timerBase LONG, condition BOOL)")
+        bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {}
 
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                if (slideOffset > 0)
+                    v.fab_add.animate().scaleX(1 - slideOffset).scaleY(1 - slideOffset).setDuration(0).start()
+            }
+        })
 
 
         activityViewModel.allActivity.observe(this, Observer { acts ->
@@ -129,16 +150,30 @@ class MainFragment : Fragment() {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }
 
+        v.fab_add.setOnClickListener {
+            val intent = Intent(this.activity, AddActivity::class.java)
+            startActivityForResult(intent, REQUEST_KEY)
+        }
+        if (savedInstanceState == null) {
+            Log.i("SavedInstance", "OnCreateView")
+        }
         return v
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (savedInstanceState != null) {
+            arguments = savedInstanceState.getBundle("Bundle")
+        }
+
         arguments?.let {
             collapsed_text.text = it.getString(KEY)
             Toast.makeText(context, it.getString(KEY), Toast.LENGTH_SHORT).show()
             Log.i("onViewCreated", it.getString(KEY))
+        }
+        if (savedInstanceState == null) {
+            Log.i("SavedInstance", "OnViewCreated")
         }
     }
 
@@ -148,16 +183,11 @@ class MainFragment : Fragment() {
 
         removeAlarm(context!!)
         NotificationsUtils.hideTimerNotification(context!!)
-    }
 
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        Log.i("Attacjh", "Attach")
     }
 
     override fun onPause() {
         super.onPause()
-        Log.i("PAUSE", "PAUSE")
         if (timerActivity.timerState == TimerActivity.TimerState.running) {
             timerActivity.timer!!.cancel()
             val wakeUpTime = setAlarm(context!!, nowSeconds, timerActivity.secondsRemaining)
@@ -168,8 +198,7 @@ class MainFragment : Fragment() {
 
         val argument = Bundle()
         argument.putString(KEY, collapsed_text.text.toString())
-
-        this.arguments = argument
+        arguments = argument
 
 
         PrefUtilsTimer.setPreviousTimerLengthSeconds(timerActivity.timerLength, context!!)
@@ -179,26 +208,38 @@ class MainFragment : Fragment() {
     }
 
 
-    fun updateActivity(activity: Activity){
+    fun updateActivity(activity: Activity) {
         activityViewModel.updateActivity(activity)
     }
 
-    fun insertActivity(activity: Activity){
+    fun insertActivity(activity: Activity) {
         activityViewModel.insertActivity(activity)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intentData: Intent?) {
+        super.onActivityResult(requestCode, resultCode, intentData)
+        if (requestCode == REQUEST_KEY && resultCode == android.app.Activity.RESULT_OK) {
+            intentData?.let { data ->
+                val info = data.getStringArrayListExtra(AddActivity.EXTRA_REPLY)
+                val id = if (activityViewModel.allActivity.value != null)
+                    activityViewModel.allActivity.value!!.size
+                else 0
+                activityViewModel.insertActivity(Activity(id, info[0], info[1], 0, 0))
+            }
+        } else {
+            Toast.makeText(context, "НЕЧЕГО СОХРАНЯТЬ", Toast.LENGTH_SHORT).show()
+        }
+    }
 
-//    override fun onSaveInstanceState(outState: Bundle) {
-//        super.onSaveInstanceState(outState)
-//        outState.putString("dataGotFromServer", collapsed_text.text.toString())
-//    }
-//
-//    override fun onActivityCreated(savedInstanceState: Bundle?) {
-//        super.onActivityCreated(savedInstanceState)
-//        if (savedInstanceState != null) {
-//            collapsed_text.text = savedInstanceState.getString("dataGotFromServer")
-//            Log.i("DATA_LOAD", collapsed_text.text.toString())
-//        }
-//    }
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBundle("Bundle", arguments)
+    }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        if(savedInstanceState == null)
+            Log.i("SavedInstance", "onActivityCreated")
+
+    }
 }

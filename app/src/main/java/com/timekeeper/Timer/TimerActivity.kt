@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.content_timer.view.*
 import java.io.Serializable
 import java.util.*
 
-class TimerActivity() : Serializable {
+class TimerActivity(){
     private var view: View? = null
     private var parent: MainFragment? = null
 
