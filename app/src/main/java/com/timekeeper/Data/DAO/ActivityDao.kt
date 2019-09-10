@@ -10,6 +10,9 @@ interface ActivityDao {
     @Query("SELECT * FROM activity ORDER BY id")
     fun getAllActivities(): LiveData<List<Activity>>
 
+    @Query("SELECT * FROM activity WHERE id = :id")
+    fun getActivityById(id: Int): LiveData<Activity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(activity: Activity)
 

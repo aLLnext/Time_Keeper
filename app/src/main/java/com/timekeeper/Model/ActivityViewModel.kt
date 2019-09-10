@@ -32,6 +32,8 @@ class ActivityViewModel(application: Application) : AndroidViewModel(application
         parentJob.cancel()
     }
 
+    fun getActivityById(id: Int) = repositoryAct.getActivityById(id)
+
     fun insertActivity(activity: Activity) = scope.launch(Dispatchers.IO) {
         repositoryAct.insertActivity(activity)
     }
@@ -43,4 +45,5 @@ class ActivityViewModel(application: Application) : AndroidViewModel(application
     fun deleteActivity(activity: Activity) = scope.launch(Dispatchers.IO) {
         repositoryAct.deleteActivity(activity)
     }
+
 }

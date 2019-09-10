@@ -37,6 +37,9 @@ import android.R.attr.start
 import android.content.Intent
 import androidx.annotation.NonNull
 import kotlinx.android.synthetic.main.fragment_main.*
+import android.R.attr.rating
+import android.database.Observable
+import androidx.annotation.Nullable
 
 
 class MainFragment : Fragment() {
@@ -60,13 +63,7 @@ class MainFragment : Fragment() {
     lateinit var adapter: MainViewAdapter
 
     private lateinit var timerActivity: TimerActivity
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (savedInstanceState == null) {
-            Log.i("SavedInstance", "OnCreate")
-        }
-    }
+    private lateinit var currentActivity: Activity
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.fragment_main, null)
@@ -78,7 +75,7 @@ class MainFragment : Fragment() {
         v.endpage.typeface = MLight
         timerActivity = TimerActivity(this, v)
         activityViewModel = ViewModelProviders.of(this).get(ActivityViewModel::class.java)
-        adapter = MainViewAdapter(timerActivity, v.bottom_sheet, activityViewModel, this.context!!)
+        adapter = MainViewAdapter(timerActivity, v.bottom_sheet, activityViewModel, context!!)
         v.recycle_activity.layoutManager = LinearLayoutManager(activity)
         v.recycle_activity.adapter = adapter
         val offsetPx = 150
@@ -105,6 +102,13 @@ class MainFragment : Fragment() {
             }
         })
 
+        val id = PrefUtilsTimer.getActivityId(context!!)
+
+        activityViewModel.getActivityById(id).observe(this, Observer { acts ->
+            acts?.let {
+                v.collapsed_text.text = it.name
+            }
+        })
 
         if (timerActivity.timerState == TimerActivity.TimerState.running) {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -123,12 +127,6 @@ class MainFragment : Fragment() {
                     bottomSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED
                 )
                     bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-
-//                if (dy > 0) {
-//                    // Scrolling up
-//                } else {
-//                    // Scrolling down
-//                }
             }
         })
 
@@ -154,9 +152,8 @@ class MainFragment : Fragment() {
             val intent = Intent(this.activity, AddActivity::class.java)
             startActivityForResult(intent, REQUEST_KEY)
         }
-        if (savedInstanceState == null) {
-            Log.i("SavedInstance", "OnCreateView")
-        }
+
+
         return v
     }
 
@@ -171,9 +168,6 @@ class MainFragment : Fragment() {
             collapsed_text.text = it.getString(KEY)
             Toast.makeText(context, it.getString(KEY), Toast.LENGTH_SHORT).show()
             Log.i("onViewCreated", it.getString(KEY))
-        }
-        if (savedInstanceState == null) {
-            Log.i("SavedInstance", "OnViewCreated")
         }
     }
 
@@ -207,15 +201,6 @@ class MainFragment : Fragment() {
         PrefUtilsTimer.setActivityId(timerActivity.activityId, context!!)
     }
 
-
-    fun updateActivity(activity: Activity) {
-        activityViewModel.updateActivity(activity)
-    }
-
-    fun insertActivity(activity: Activity) {
-        activityViewModel.insertActivity(activity)
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, intentData: Intent?) {
         super.onActivityResult(requestCode, resultCode, intentData)
         if (requestCode == REQUEST_KEY && resultCode == android.app.Activity.RESULT_OK) {
@@ -233,13 +218,18 @@ class MainFragment : Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putBundle("Bundle", arguments)
+        outState.putString("Bundle", collapsed_text.text.toString())
     }
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        if(savedInstanceState == null)
-            Log.i("SavedInstance", "onActivityCreated")
+        if (savedInstanceState != null) {
+            val str = savedInstanceState.getString("Bundle")
+            collapsed_text.text = str
+        }
+//        if(savedInstanceState == null)
+//            Log.i("SavedInstance", "onActivityCreated")
 
     }
 }

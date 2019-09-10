@@ -8,6 +8,9 @@ import com.timekeeper.Data.Entity.Activity
 class ActivityRepository(private val activityDao: ActivityDao) {
     val allActivities: LiveData<List<Activity>> = activityDao.getAllActivities()
 
+    fun getActivityById(id: Int) = activityDao.getActivityById(id)
+
+
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun insertActivity(activity: Activity) {
@@ -25,5 +28,6 @@ class ActivityRepository(private val activityDao: ActivityDao) {
     suspend fun deleteActivity(activity: Activity) {
         activityDao.delete(activity)
     }
+
 
 }
