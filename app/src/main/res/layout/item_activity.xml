@@ -98,7 +98,7 @@
                             android:layout_marginTop="8dp"
                             android:textSize="18sp"
                             android:textColor="@color/colorPrimary"
-                            android:format="00:00"/>
+                            android:format="%s"/>
 
                 </LinearLayout>
 

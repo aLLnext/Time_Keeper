@@ -15,7 +15,7 @@
                 android:theme="@style/AppTheme.NoActionBar">
         <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.timekeeper.Fragments.NavigationActivity"/>
+                android:value="com.timekeeper.MainActivity"/>
         </activity>
 
         <receiver
@@ -38,15 +38,15 @@
         <activity
                 android:name=".Timer.TimerActivity"
                 android:label="@string/title_activity_timer"
-                android:parentActivityName=".Fragments.NavigationActivity"
+                android:parentActivityName=".MainActivity"
                 android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
-                    android:value="com.timekeeper.Fragments.NavigationActivity"/>
+                    android:value="com.timekeeper.MainActivity"/>
         </activity>
 
         <activity
-                android:name=".Fragments.NavigationActivity"
+                android:name=".MainActivity"
                 android:label="@string/title_activity_navigation"
                 android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

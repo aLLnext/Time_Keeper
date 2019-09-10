@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.item_activity.view.*
 import com.timekeeper.R
 import kotlinx.android.synthetic.main.popupwindow.view.*
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import com.google.android.material.snackbar.Snackbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -24,6 +25,8 @@ import com.timekeeper.Data.Entity.Activity
 import com.timekeeper.Model.ActivityViewModel
 import com.timekeeper.Timer.TimerActivity
 import kotlinx.android.synthetic.main.activity_timer.view.*
+import com.timekeeper.Timer.TimerActivity.TimerState.*
+import com.timekeeper.Utils.PrefUtilsTimer
 
 
 class MainViewAdapter(
@@ -64,17 +67,43 @@ class MainViewAdapter(
             val id = activities[pos].id
             holder.titleAct.text = activities[pos].name
 
-            if (timerActivity.timerState == TimerActivity.TimerState.stopped) {
+            if (timerActivity.timerState == stopped) {
+                if (activities[pos].status == running.ordinal) {
+                    activities[pos].status = stopped.ordinal
+                    activities[pos].all_time = SystemClock.elapsedRealtime() - holder.fullTime.base
+                    holder.fullTime.stop()
+//                    PrefUtilsTimer.setActivityId(id, context)
+//                    PrefUtilsTimer.setTimerState(stopped, context)
+                    activityViewModel.updateActivity(activities[pos])
+                    Log.i("ID_1", id.toString())
+                    Log.i("NAME_1",  holder.titleAct.text.toString())
+                } else {
+                    holder.fullTime.base = SystemClock.elapsedRealtime() - activities[pos].all_time
+                }
                 timerActivity.activityId = id
                 holder.btnPlay.setImageResource(R.drawable.ic_play_arrow_black_48dp)
             } else if (id == timerActivity.activityId) {
                 if (timerActivity.timerState == TimerActivity.TimerState.paused) {
-                    Log.i("name", activities[pos].name)
-                    holder.btnPlay.setImageResource(R.drawable.ic_pause_black_48dp)
-                } else if (timerActivity.timerState == TimerActivity.TimerState.running)
+                    if (activities[pos].status == running.ordinal) {
+                        activities[pos].status = paused.ordinal
+                        activities[pos].all_time = SystemClock.elapsedRealtime() - holder.fullTime.base
+                        holder.btnPlay.setImageResource(R.drawable.ic_pause_black_48dp)
+                        holder.fullTime.stop()
+//                        PrefUtilsTimer.setActivityId(id, context)
+//                        PrefUtilsTimer.setTimerState(paused, context)
+                        activityViewModel.updateActivity(activities[pos])
+                        Log.i("ID_2", id.toString())
+                        Log.i("NAME_2",  holder.titleAct.text.toString())
+                    }
+                } else if (timerActivity.timerState == TimerActivity.TimerState.running) {
+                    activities[pos].status = running.ordinal
+                    holder.fullTime.base = SystemClock.elapsedRealtime() - activities[pos].all_time
+                    holder.fullTime.start()
                     holder.btnPlay.setImageResource(R.drawable.ic_stop_black_48dp)
+                }
             } else {
                 holder.btnPlay.setImageResource(R.drawable.ic_play_arrow_black_48dp)
+                holder.fullTime.base = SystemClock.elapsedRealtime() - activities[pos].all_time
             }
 
             holder.deleteLayout.setOnClickListener {
@@ -94,7 +123,6 @@ class MainViewAdapter(
                 showPopupWindow(holder.itemView)
             }
 
-
             holder.btnPlay.setOnClickListener {
                 if (timerActivity.timerState == TimerActivity.TimerState.stopped)
                     timerActivity.activityId = id
@@ -103,12 +131,14 @@ class MainViewAdapter(
                 if (timerActivity.activityId == id || timerActivity.timerState == TimerActivity.TimerState.stopped) {
                     bottomSheet.collapsed_text.text = holder.itemView.titleact.text
                     if (timerActivity.timerState == TimerActivity.TimerState.running) {
+                        //activities[pos].status = stopped.ordinal
                         holder.btnPlay.setImageResource(R.drawable.ic_play_arrow_black_48dp)
                         timerActivity.setFabStop()
                         holder.sheetBehavior.isHideable = true
                         holder.sheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                         //holder.fullTime.start()
                     } else {
+                        //activities[pos].status = running.ordinal
                         holder.btnPlay.setImageResource(R.drawable.ic_stop_black_48dp)
                         holder.sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
                         timerActivity.setFabPlay()
@@ -128,7 +158,6 @@ class MainViewAdapter(
                 Toast.makeText(context, id.toString(), Toast.LENGTH_SHORT).show()
                 if (timerActivity.activityId == id || timerActivity.timerState == TimerActivity.TimerState.stopped) {
                     bottomSheet.collapsed_text.text = holder.itemView.titleact.text
-                    //timerActivity.current_view_id = holder.itemView.id
 
                     if (timerActivity.timerState != TimerActivity.TimerState.running) {
                         if (holder.sheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED) {
@@ -174,6 +203,7 @@ class MainViewAdapter(
 
     fun saveStates(outState: Bundle?) {
         outState!!.putString("activityName", bottomSheet.collapsed_text.text.toString())
+        Log.i("Save_DATA", bottomSheet.collapsed_text.text.toString())
         viewBinderHelper.saveStates(outState)
     }
 

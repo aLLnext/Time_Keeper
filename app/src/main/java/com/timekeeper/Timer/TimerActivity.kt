@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import com.timekeeper.Data.Entity.Activity
 import com.timekeeper.Fragments.MainFragment
 import com.timekeeper.R
 import com.timekeeper.Timer.TimerReceiver
@@ -17,10 +18,11 @@ import com.timekeeper.Utils.CONSTANTS
 import com.timekeeper.Utils.PrefUtilsTimer
 import kotlinx.android.synthetic.main.activity_timer.view.*
 import kotlinx.android.synthetic.main.content_timer.view.*
+import kotlinx.android.synthetic.main.item_activity.view.*
 import java.io.Serializable
 import java.util.*
 
-class TimerActivity(){
+class TimerActivity() {
     private var view: View? = null
     private var parent: MainFragment? = null
 
@@ -29,7 +31,6 @@ class TimerActivity(){
         parent = p
         initTimer()
     }
-
 
     companion object {
         fun setAlarm(context: Context, nowSeconds: Long, secondsRemaining: Long): Long {
@@ -63,6 +64,7 @@ class TimerActivity(){
     var timerState = TimerState.stopped
     var secondsRemaining = 0L
     var activityId = 0
+    var currentActivity: Activity? = null
 
     private fun initTimer() {
         timerState = PrefUtilsTimer.getTimerState(view!!.context)
@@ -97,6 +99,7 @@ class TimerActivity(){
         setNewTimerLength()
 
         view!!.countdown_progressbar.progress = timerLength.toInt()
+        view!!.fulltime.stop()
 
         PrefUtilsTimer.setSecondsRemaining(timerLength, view!!.context)
 
@@ -131,13 +134,13 @@ class TimerActivity(){
     }
 
     fun updateCountDownUI() {
-
         val minutesUntilFinished = secondsRemaining / 60
         val secondsInMinuteUntilFinished = secondsRemaining - minutesUntilFinished * 60
         val secondsStr = secondsInMinuteUntilFinished.toString()
         view!!.text_countdown.text = "$minutesUntilFinished:${
         if (secondsStr.length == 2) secondsStr
         else "0$secondsStr"}"
+
 
         view!!.countdown_progressbar.progress = (secondsRemaining).toInt()
     }
@@ -165,7 +168,7 @@ class TimerActivity(){
     fun setFabPlay() {
         startTimer()
         timerState = TimerActivity.TimerState.running
-        parent!!.adapter!!.notifyDataSetChanged()
+        parent!!.adapter.notifyDataSetChanged()
         updateButtons()
     }
 
@@ -173,22 +176,20 @@ class TimerActivity(){
         Log.i("activity", activityId.toString())
         timer!!.cancel()
         onTimerFinished()
-        parent!!.adapter!!.notifyDataSetChanged()
+        parent!!.adapter.notifyDataSetChanged()
         Log.i("DATA", "DATA CHANGED")
         Log.i("STATE", timerState.toString())
-
-
     }
 
     fun setFabPause() {
         timer!!.cancel()
         timerState = TimerActivity.TimerState.paused
-        parent!!.adapter!!.notifyDataSetChanged()
+        parent!!.adapter.notifyDataSetChanged()
         updateButtons()
     }
 
     fun initializeTimer() {
-        if(timer == null)
+        if (timer == null)
             initTimer()
     }
 }

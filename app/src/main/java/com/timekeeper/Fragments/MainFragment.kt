@@ -63,7 +63,6 @@ class MainFragment : Fragment() {
     lateinit var adapter: MainViewAdapter
 
     private lateinit var timerActivity: TimerActivity
-    private lateinit var currentActivity: Activity
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.fragment_main, null)
@@ -106,7 +105,9 @@ class MainFragment : Fragment() {
 
         activityViewModel.getActivityById(id).observe(this, Observer { acts ->
             acts?.let {
-                v.collapsed_text.text = it.name
+                timerActivity.currentActivity = it
+                if(v.collapsed_text.text.isEmpty())
+                    v.collapsed_text.text = it.name
             }
         })
 
@@ -117,7 +118,6 @@ class MainFragment : Fragment() {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             bottomSheetBehavior.isHideable = true
         }
-
 
         v.recycle_activity.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
@@ -139,13 +139,13 @@ class MainFragment : Fragment() {
         v.fab_pause.setOnClickListener {
             //btnplay.setImageResource(R.drawable.ic_pause_black_48dp)
             timerActivity.setFabPause()
-            bottomSheetBehavior.isHideable = false
+            //bottomSheetBehavior.isHideable = false
         }
         v.fab_stop.setOnClickListener {
             //btnplay.setImageResource(R.drawable.ic_play_arrow_black_48dp)
             timerActivity.setFabStop()
             bottomSheetBehavior.isHideable = true
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            //bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }
 
         v.fab_add.setOnClickListener {
@@ -153,16 +153,11 @@ class MainFragment : Fragment() {
             startActivityForResult(intent, REQUEST_KEY)
         }
 
-
         return v
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        if (savedInstanceState != null) {
-            arguments = savedInstanceState.getBundle("Bundle")
-        }
 
         arguments?.let {
             collapsed_text.text = it.getString(KEY)
@@ -209,7 +204,7 @@ class MainFragment : Fragment() {
                 val id = if (activityViewModel.allActivity.value != null)
                     activityViewModel.allActivity.value!!.size
                 else 0
-                activityViewModel.insertActivity(Activity(id, info[0], info[1], 0, 0))
+                activityViewModel.insertActivity(Activity(id, info[0], info[1], 0, 0, 0))
             }
         } else {
             Toast.makeText(context, "НЕЧЕГО СОХРАНЯТЬ", Toast.LENGTH_SHORT).show()
@@ -220,7 +215,6 @@ class MainFragment : Fragment() {
         super.onSaveInstanceState(outState)
         outState.putString("Bundle", collapsed_text.text.toString())
     }
-
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

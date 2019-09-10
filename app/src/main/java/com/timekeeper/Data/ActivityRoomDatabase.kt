@@ -12,7 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@Database(entities = [Activity::class], version = 1)
+@Database(entities = [Activity::class], version = 2)
 abstract class ActivityRoomDatabase : RoomDatabase() {
 
     abstract fun activityDao(): ActivityDao
@@ -56,9 +56,9 @@ abstract class ActivityRoomDatabase : RoomDatabase() {
 
         fun populateDatabase(activityDao: ActivityDao) {
             activityDao.deleteAll()
-            val act1 = Activity(0, "Coding", "", 0, 0)
+            val act1 = Activity(0, "Coding", "", 0, 0, 0)
             activityDao.insert(act1)
-            val act2 = Activity(1, "Sleeping", "", 0, 0)
+            val act2 = Activity(1, "Sleeping", "", 0, 0, 0)
             activityDao.insert(act2)
         }
     }
