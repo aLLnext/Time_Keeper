@@ -107,6 +107,7 @@ class TimerActivity() {
 
         updateButtons()
         updateCountDownUI()
+        parent!!.adapter.notifyDataSetChanged()
     }
 
     private fun startTimer() {
@@ -176,7 +177,6 @@ class TimerActivity() {
         Log.i("activity", activityId.toString())
         timer!!.cancel()
         onTimerFinished()
-        parent!!.adapter.notifyDataSetChanged()
         Log.i("DATA", "DATA CHANGED")
         Log.i("STATE", timerState.toString())
     }

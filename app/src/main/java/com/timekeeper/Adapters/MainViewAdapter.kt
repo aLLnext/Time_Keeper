@@ -27,6 +27,7 @@ import com.timekeeper.Timer.TimerActivity
 import kotlinx.android.synthetic.main.activity_timer.view.*
 import com.timekeeper.Timer.TimerActivity.TimerState.*
 import com.timekeeper.Utils.PrefUtilsTimer
+import kotlinx.android.synthetic.main.fragment_main.view.*
 
 
 class MainViewAdapter(
@@ -75,6 +76,9 @@ class MainViewAdapter(
 //                    PrefUtilsTimer.setActivityId(id, context)
 //                    PrefUtilsTimer.setTimerState(stopped, context)
                     activityViewModel.updateActivity(activities[pos])
+                    val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                    bottomSheetBehavior.isHideable = true
                     Log.i("ID_1", id.toString())
                     Log.i("NAME_1",  holder.titleAct.text.toString())
                 } else {
@@ -94,6 +98,9 @@ class MainViewAdapter(
                         activityViewModel.updateActivity(activities[pos])
                         Log.i("ID_2", id.toString())
                         Log.i("NAME_2",  holder.titleAct.text.toString())
+                    }else if(activities[pos].status == paused.ordinal){
+                        holder.fullTime.base = SystemClock.elapsedRealtime() - activities[pos].all_time
+                        holder.btnPlay.setImageResource(R.drawable.ic_pause_black_48dp)
                     }
                 } else if (timerActivity.timerState == TimerActivity.TimerState.running) {
                     activities[pos].status = running.ordinal

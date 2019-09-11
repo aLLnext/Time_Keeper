@@ -106,12 +106,14 @@ class MainFragment : Fragment() {
         activityViewModel.getActivityById(id).observe(this, Observer { acts ->
             acts?.let {
                 timerActivity.currentActivity = it
-                if(v.collapsed_text.text.isEmpty())
+                if (v.collapsed_text.text.isEmpty())
                     v.collapsed_text.text = it.name
             }
         })
 
-        if (timerActivity.timerState == TimerActivity.TimerState.running) {
+        if (timerActivity.timerState == TimerActivity.TimerState.running ||
+            timerActivity.timerState == TimerActivity.TimerState.paused
+        ) {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             bottomSheetBehavior.isHideable = false
         } else {
@@ -145,7 +147,7 @@ class MainFragment : Fragment() {
             //btnplay.setImageResource(R.drawable.ic_play_arrow_black_48dp)
             timerActivity.setFabStop()
             bottomSheetBehavior.isHideable = true
-            //bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }
 
         v.fab_add.setOnClickListener {
