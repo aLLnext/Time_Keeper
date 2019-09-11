@@ -37,7 +37,6 @@
 
         <activity
                 android:name=".Timer.TimerActivity"
-                android:label="@string/title_activity_timer"
                 android:parentActivityName=".MainActivity"
                 android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -47,7 +46,6 @@
 
         <activity
                 android:name=".MainActivity"
-                android:label="@string/title_activity_navigation"
                 android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

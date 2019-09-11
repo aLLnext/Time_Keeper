@@ -54,6 +54,7 @@ class MainFragment : Fragment() {
 
     companion object {
         const val KEY = "MainFragment"
+        const val KEY_COLLAPSED = "CollapsedTextRequest"
         const val REQUEST_KEY = 0//"com.timekeeper.MainFragment.Request"
     }
 
@@ -163,8 +164,6 @@ class MainFragment : Fragment() {
 
         arguments?.let {
             collapsed_text.text = it.getString(KEY)
-            Toast.makeText(context, it.getString(KEY), Toast.LENGTH_SHORT).show()
-            Log.i("onViewCreated", it.getString(KEY))
         }
     }
 
@@ -209,23 +208,20 @@ class MainFragment : Fragment() {
                 activityViewModel.insertActivity(Activity(id, info[0], info[1], 0, 0, 0))
             }
         } else {
-            Toast.makeText(context, "НЕЧЕГО СОХРАНЯТЬ", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.toast_nothing_save, Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString("Bundle", collapsed_text.text.toString())
+        outState.putString(KEY_COLLAPSED, collapsed_text.text.toString())
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         if (savedInstanceState != null) {
-            val str = savedInstanceState.getString("Bundle")
+            val str = savedInstanceState.getString(KEY_COLLAPSED)
             collapsed_text.text = str
         }
-//        if(savedInstanceState == null)
-//            Log.i("SavedInstance", "onActivityCreated")
-
     }
 }

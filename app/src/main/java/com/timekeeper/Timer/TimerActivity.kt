@@ -174,11 +174,8 @@ class TimerActivity() {
     }
 
     fun setFabStop() {
-        Log.i("activity", activityId.toString())
         timer!!.cancel()
         onTimerFinished()
-        Log.i("DATA", "DATA CHANGED")
-        Log.i("STATE", timerState.toString())
     }
 
     fun setFabPause() {

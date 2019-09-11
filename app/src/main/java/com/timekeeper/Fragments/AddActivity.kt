@@ -17,7 +17,7 @@ class AddActivity : AppCompatActivity() {
         setContentView(R.layout.activity_add)
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.title = "Add activity"
+        supportActionBar!!.title = resources.getString(R.string.add_activity_title)
 
         button_save.setOnClickListener {
             val replyIntent = Intent()

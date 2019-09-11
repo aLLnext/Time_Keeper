@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">TimeKeeperV2</string>
+    <string name="add_activity_title">Add activity</string>
     <string name="popup_title">Activity name</string>
     <string name="popup_comment">Activity comment</string>
     <string name="title_activity_navigation">NavigationActivity</string>
@@ -11,4 +12,16 @@
     <string name="snackbar_title">Activity Deleted</string>
     <string name="snackbar_undo">UNDO</string>
     <string name="title_activity_timer">TimerActivity</string>
+    <string name="toast_nothing_save">Nothing to SAVE</string>
+
+    <string name="notification_end_title">Timer Expired</string>
+    <string name="notification_start_again">Start again?</string>
+    <string name="notification_end_timer">End</string>
+    <string name="notification_pause_timer">Timer is paused.</string>
+
+    <string name="notification_start_action">Start</string>
+    <string name="notification_pause_action">Pause</string>
+    <string name="notification_stop_action">Stop</string>
+    <string name="notification_resume_action">Resume</string>
+
 </resources>

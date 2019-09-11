@@ -17,6 +17,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var dashboard: DashboardFragment
     private lateinit var settings: SettingsFragment
 
+    companion object {
+        const val KEY_MAIN = "MainFragment"
+        const val KEY_DASHBOARD = "DashboardFragment"
+        const val KEY_SETTINGS = "SettingsFragment"
+    }
+
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         val selectedFragment by lazy {
             when (item.itemId) {
@@ -44,9 +50,9 @@ class MainActivity : AppCompatActivity() {
         var Fsettings: Fragment? = null
         if (savedInstanceState != null) {
             Toast.makeText(applicationContext, "HAS", Toast.LENGTH_SHORT).show()
-            Fmain = supportFragmentManager.getFragment(savedInstanceState, "MainFragment")
-            Fdashboard = supportFragmentManager.getFragment(savedInstanceState, "DashboardFragment")
-            Fsettings = supportFragmentManager.getFragment(savedInstanceState, "SettingsFragment")
+            Fmain = supportFragmentManager.getFragment(savedInstanceState, KEY_MAIN)
+            Fdashboard = supportFragmentManager.getFragment(savedInstanceState, KEY_DASHBOARD)
+            Fsettings = supportFragmentManager.getFragment(savedInstanceState, KEY_SETTINGS)
         }
         main = if (Fmain == null) MainFragment() else Fmain as MainFragment
         dashboard = if (Fdashboard == null) DashboardFragment() else Fdashboard as DashboardFragment
@@ -62,11 +68,11 @@ class MainActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
         if (main.isAdded)
-            supportFragmentManager.putFragment(outState!!, "MainFragment", main)
+            supportFragmentManager.putFragment(outState!!, KEY_MAIN, main)
         if (dashboard.isAdded)
-            supportFragmentManager.putFragment(outState!!, "DashboardFragment", dashboard)
+            supportFragmentManager.putFragment(outState!!, KEY_DASHBOARD, dashboard)
         if (settings.isAdded)
-            supportFragmentManager.putFragment(outState!!, "SettingsFragment", settings)
+            supportFragmentManager.putFragment(outState!!, KEY_SETTINGS, settings)
         val adapter = main.adapter
         adapter.saveStates(outState)
     }

@@ -71,16 +71,12 @@ class MainViewAdapter(
             if (timerActivity.timerState == stopped) {
                 if (activities[pos].status == running.ordinal) {
                     activities[pos].status = stopped.ordinal
-                    activities[pos].all_time = SystemClock.elapsedRealtime() - holder.fullTime.base
-                    holder.fullTime.stop()
-//                    PrefUtilsTimer.setActivityId(id, context)
-//                    PrefUtilsTimer.setTimerState(stopped, context)
-                    activityViewModel.updateActivity(activities[pos])
+                    stopItemTimer(pos, holder)
                     val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
                     bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                     bottomSheetBehavior.isHideable = true
                     Log.i("ID_1", id.toString())
-                    Log.i("NAME_1",  holder.titleAct.text.toString())
+                    Log.i("NAME_1", holder.titleAct.text.toString())
                 } else {
                     holder.fullTime.base = SystemClock.elapsedRealtime() - activities[pos].all_time
                 }
@@ -90,15 +86,9 @@ class MainViewAdapter(
                 if (timerActivity.timerState == TimerActivity.TimerState.paused) {
                     if (activities[pos].status == running.ordinal) {
                         activities[pos].status = paused.ordinal
-                        activities[pos].all_time = SystemClock.elapsedRealtime() - holder.fullTime.base
                         holder.btnPlay.setImageResource(R.drawable.ic_pause_black_48dp)
-                        holder.fullTime.stop()
-//                        PrefUtilsTimer.setActivityId(id, context)
-//                        PrefUtilsTimer.setTimerState(paused, context)
-                        activityViewModel.updateActivity(activities[pos])
-                        Log.i("ID_2", id.toString())
-                        Log.i("NAME_2",  holder.titleAct.text.toString())
-                    }else if(activities[pos].status == paused.ordinal){
+                        stopItemTimer(pos, holder)
+                    } else if (activities[pos].status == paused.ordinal) {
                         holder.fullTime.base = SystemClock.elapsedRealtime() - activities[pos].all_time
                         holder.btnPlay.setImageResource(R.drawable.ic_pause_black_48dp)
                     }
@@ -118,10 +108,6 @@ class MainViewAdapter(
                 deletedItem = activities[pos]
 
                 activityViewModel.deleteActivity(deletedItem!!)
-                //database.activityDao().delete(deletedItem!!)
-                //activities.removeAt(pos)
-                //notifyItemRemoved(pos)
-                //notifyItemRangeChanged(pos, itemCount - pos)
                 Toast.makeText(context, "$pos+${activities.size}", Toast.LENGTH_SHORT).show()
                 showUndoSnackbar(holder.itemView)
             }
@@ -159,7 +145,6 @@ class MainViewAdapter(
                     timerActivity.timerState == TimerActivity.TimerState.stopped
                 )
                     holder.sheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-                Log.i("ID", timerActivity.timerState.toString())
                 if (timerActivity.timerState == TimerActivity.TimerState.stopped)
                     timerActivity.activityId = id
                 Toast.makeText(context, id.toString(), Toast.LENGTH_SHORT).show()
@@ -176,6 +161,12 @@ class MainViewAdapter(
                 }
             }
         }
+    }
+
+    private fun stopItemTimer(pos: Int, holder: MyViewHolder) {
+        activities[pos].all_time = SystemClock.elapsedRealtime() - holder.fullTime.base
+        holder.fullTime.stop()
+        activityViewModel.updateActivity(activities[pos])
     }
 
 
@@ -220,7 +211,6 @@ class MainViewAdapter(
      */
     fun restoreStates(inState: Bundle?) {
         bottomSheet.collapsed_text.text = inState!!.getString("activityName")
-        Log.i("TEST_DATA", bottomSheet.collapsed_text.text.toString())
         viewBinderHelper.restoreStates(inState)
     }
 
