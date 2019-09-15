@@ -6,7 +6,6 @@ import android.content.Intent
 import com.timekeeper.Utils.CONSTANTS
 import com.timekeeper.Utils.NotificationsUtils
 import com.timekeeper.Utils.PrefUtilsTimer
-import java.sql.Time
 
 class TimerNotificationActionReceiver : BroadcastReceiver() {
 

@@ -26,13 +26,13 @@ class MainActivity : AppCompatActivity() {
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         val selectedFragment by lazy {
             when (item.itemId) {
-                R.id.navigation_home -> {
+                R.id.navigationHome -> {
                     main
                 }
-                R.id.navigation_info -> {
+                R.id.navigationInfo -> {
                     dashboard
                 }
-                R.id.navigation_settings -> {
+                R.id.navigationSettings -> {
                     settings
                 }
                 else -> null

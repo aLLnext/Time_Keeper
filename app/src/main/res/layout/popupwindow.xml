@@ -15,7 +15,7 @@
 
         <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/popup_title"
-                android:hint="@string/popup_title"
+                android:hint="@string/popupTitle"
                 app:met_floatingLabel="highlight"
                 tools:layout_edotor_absoluteX="8dp"
                 android:maxLines="1"
@@ -34,7 +34,7 @@
                 android:maxLines="6"
                 android:scrollbars="vertical"
                 android:id="@+id/popup_comment"
-                android:hint="@string/popup_comment"
+                android:hint="@string/popupComment"
                 app:met_floatingLabel="highlight"
                 tools:layout_edotor_absoluteX="8dp"
                 android:layout_marginEnd="20dp"
@@ -95,7 +95,7 @@
                 android:id="@+id/popup_save"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/popup_save"
+                android:text="@string/popupSave"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginStart="16dp" app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginEnd="16dp"

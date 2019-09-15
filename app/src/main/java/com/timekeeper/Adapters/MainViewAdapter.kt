@@ -172,10 +172,10 @@ class MainViewAdapter(
 
     private fun showUndoSnackbar(v: View) {
         val snackbar = Snackbar.make(
-            v, R.string.snackbar_title,
+            v, R.string.snackbarTitle,
             Snackbar.LENGTH_LONG
         )
-        snackbar.setAction(R.string.snackbar_undo) {
+        snackbar.setAction(R.string.snackbarUndo) {
             undoDelete()
         }
         snackbar.show()
@@ -183,7 +183,7 @@ class MainViewAdapter(
 
     fun showPopupWindow(v: View) {
         val builder = AlertDialog.Builder(context)
-        builder.setTitle(R.string.popup_title)
+        builder.setTitle(R.string.popupTitle)
 
         val view = LayoutInflater.from(context).inflate(R.layout.popupwindow, null)
         (view.popup_title as TextView).text = v.titleact.text

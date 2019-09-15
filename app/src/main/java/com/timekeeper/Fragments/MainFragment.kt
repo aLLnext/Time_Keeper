@@ -208,7 +208,7 @@ class MainFragment : Fragment() {
                 activityViewModel.insertActivity(Activity(id, info[0], info[1], 0, 0, 0))
             }
         } else {
-            Toast.makeText(context, R.string.toast_nothing_save, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.toastNothingSave, Toast.LENGTH_SHORT).show()
         }
     }
 

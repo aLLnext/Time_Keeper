@@ -34,12 +34,12 @@ class NotificationsUtils {
             )
 
             val nBuilder = getBasicNotificationBuilder(context, CHANNEL_ID_TIMER, true)
-            nBuilder.setContentTitle(context.resources.getString(R.string.notification_end_title))
-                .setContentText(context.resources.getString(R.string.notification_start_again))
+            nBuilder.setContentTitle(context.resources.getString(R.string.notificationEndTitle))
+                .setContentText(context.resources.getString(R.string.notificationStartAgain))
                 .setContentIntent(getPendingIntentWithStack(context, TimerActivity::class.java))
                 .addAction(
                     R.drawable.ic_play_arrow_black_48dp,
-                    context.resources.getString(R.string.notification_start_action),
+                    context.resources.getString(R.string.notificationStartAction),
                     startPendingIntent
                 )
 
@@ -65,9 +65,9 @@ class NotificationsUtils {
             val df = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT)
 
             val nBuilder = getBasicNotificationBuilder(context, CHANNEL_ID_TIMER, true)
-            nBuilder.setContentTitle(context.resources.getString(R.string.notification_end_title))
+            nBuilder.setContentTitle(context.resources.getString(R.string.notificationEndTitle))
                 .setContentText(
-                    "${context.resources.getString(R.string.notification_end_timer)} ${df.format(
+                    "${context.resources.getString(R.string.notificationEndTimer)} ${df.format(
                         Date(
                             wakeUpTime
                         )
@@ -77,12 +77,12 @@ class NotificationsUtils {
                 .setOngoing(true)
                 .addAction(
                     R.drawable.ic_play_arrow_black_48dp,
-                    context.resources.getString(R.string.notification_stop_action),
+                    context.resources.getString(R.string.notificationStopAction),
                     stopPendingIntent
                 )
                 .addAction(
                     R.drawable.ic_play_arrow_black_48dp,
-                    context.resources.getString(R.string.notification_pause_action),
+                    context.resources.getString(R.string.notificationPauseAction),
                     pausePendingIntent
                 )
 
@@ -100,13 +100,13 @@ class NotificationsUtils {
             )
 
             val nBuilder = getBasicNotificationBuilder(context, CHANNEL_ID_TIMER, true)
-            nBuilder.setContentTitle(context.resources.getString(R.string.notification_pause_timer))
-                .setContentText("${context.resources.getString(R.string.notification_resume_action)}?")
+            nBuilder.setContentTitle(context.resources.getString(R.string.notificationPauseTimer))
+                .setContentText("${context.resources.getString(R.string.notificationResumeAction)}?")
                 .setContentIntent(getPendingIntentWithStack(context, TimerActivity::class.java))
                 .setOngoing(true)
                 .addAction(
                     R.drawable.ic_play_arrow_black_48dp,
-                    context.resources.getString(R.string.notification_resume_action),
+                    context.resources.getString(R.string.notificationResumeAction),
                     resumePendingIntent
                 )
 

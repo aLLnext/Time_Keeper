@@ -1,27 +1,27 @@
 <resources>
     <string name="app_name">TimeKeeperV2</string>
     <string name="add_activity_title">Add activity</string>
-    <string name="popup_title">Activity name</string>
-    <string name="popup_comment">Activity comment</string>
-    <string name="title_activity_navigation">NavigationActivity</string>
-    <string name="title_home">Home</string>
-    <string name="title_info">Dashboard</string>
-    <string name="title_settings">Settings</string>
-    <string name="popup_save">SAVE</string>
-    <string name="popup_delete">delete</string>
-    <string name="snackbar_title">Activity Deleted</string>
-    <string name="snackbar_undo">UNDO</string>
-    <string name="title_activity_timer">TimerActivity</string>
-    <string name="toast_nothing_save">Nothing to SAVE</string>
+    <string name="popupTitle">Activity name</string>
+    <string name="popupComment">Activity comment</string>
+    <string name="titleActivityNavigation">NavigationActivity</string>
+    <string name="titleHome">Home</string>
+    <string name="titleInfo">Dashboard</string>
+    <string name="titleSettings">Settings</string>
+    <string name="popupSave">SAVE</string>
+    <string name="popupDelete">delete</string>
+    <string name="snackbarTitle">Activity Deleted</string>
+    <string name="snackbarUndo">UNDO</string>
+    <string name="titleActivityTimer">TimerActivity</string>
+    <string name="toastNothingSave">Nothing to SAVE</string>
 
-    <string name="notification_end_title">Timer Expired</string>
-    <string name="notification_start_again">Start again?</string>
-    <string name="notification_end_timer">End</string>
-    <string name="notification_pause_timer">Timer is paused.</string>
+    <string name="notificationEndTitle">Timer Expired</string>
+    <string name="notificationStartAgain">Start again?</string>
+    <string name="notificationEndTimer">End</string>
+    <string name="notificationPauseTimer">Timer is paused.</string>
 
-    <string name="notification_start_action">Start</string>
-    <string name="notification_pause_action">Pause</string>
-    <string name="notification_stop_action">Stop</string>
-    <string name="notification_resume_action">Resume</string>
+    <string name="notificationStartAction">Start</string>
+    <string name="notificationPauseAction">Pause</string>
+    <string name="notificationStopAction">Stop</string>
+    <string name="notificationResumeAction">Resume</string>
 
 </resources>
